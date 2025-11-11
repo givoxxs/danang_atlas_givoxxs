@@ -1,0 +1,128 @@
+[
+  {
+    "name": "TC01: Get restaurant detail with valid ID",
+    "description": "Retrieve restaurant details with existing restaurant ID",
+    "method": "GET",
+    "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
+    "expectedStatus": 200,
+    "validateFields": [
+      "restaurantId",
+      "name",
+      "address",
+      "images",
+      "latitude",
+      "longitude",
+      "averageRating"
+    ],
+    "partialMatch": true
+  },
+  {
+    "name": "TC02: Verify restaurant has required fields",
+    "description": "Ensure all required fields are present in response",
+    "method": "GET",
+    "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
+    "expectedStatus": 200,
+    "validateFields": [
+      "restaurantId",
+      "ownerAccountId",
+      "name",
+      "address",
+      "wardId",
+      "status",
+      "createdAt"
+    ],
+    "partialMatch": true
+  },
+  {
+    "name": "TC03: Get restaurant with non-existent ID",
+    "description": "Request restaurant details with invalid UUID",
+    "method": "GET",
+    "path": "/api/v1/restaurants/00000000-0000-0000-0000-000000000000",
+    "expectedStatus": 404
+  },
+  {
+    "name": "TC04: Get restaurant with malformed ID",
+    "description": "Request with invalid UUID format",
+    "method": "GET",
+    "path": "/api/v1/restaurants/invalid-id-format",
+    "expectedStatus": 400
+  },
+  {
+    "name": "TC05: Verify restaurant images structure",
+    "description": "Ensure images object contains photo and sub_photo arrays",
+    "method": "GET",
+    "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
+    "expectedStatus": 200,
+    "validateFields": [
+      "images.photo",
+      "images.sub_photo"
+    ],
+    "partialMatch": true
+  },
+  {
+    "name": "TC06: Verify restaurant location coordinates",
+    "description": "Ensure latitude and longitude are present and valid",
+    "method": "GET",
+    "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
+    "expectedStatus": 200,
+    "validateFields": [
+      "latitude",
+      "longitude"
+    ],
+    "partialMatch": true
+  },
+  {
+    "name": "TC07: Verify restaurant opening hours",
+    "description": "Ensure openingHours object is present",
+    "method": "GET",
+    "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
+    "expectedStatus": 200,
+    "validateFields": [
+      "openingHours"
+    ],
+    "partialMatch": true
+  },
+  {
+    "name": "TC08: Verify restaurant rating information",
+    "description": "Ensure averageRating and totalReviews are present",
+    "method": "GET",
+    "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
+    "expectedStatus": 200,
+    "validateFields": [
+      "averageRating",
+      "totalReviews"
+    ],
+    "partialMatch": true
+  },
+  {
+    "name": "TC09: Get restaurant with empty ID",
+    "description": "Request without providing restaurant ID",
+    "method": "GET",
+    "path": "/api/v1/restaurants/",
+    "expectedStatus": 500
+  },
+  {
+    "name": "TC10: Verify restaurant status field",
+    "description": "Ensure status field exists and has valid value",
+    "method": "GET",
+    "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
+    "expectedStatus": 200,
+    "validateFields": [
+      "status",
+      "approvalStatus"
+    ],
+    "partialMatch": true
+  },
+  {
+    "name": "TC11: Get restaurant using old TEST_RESTAURANT_ID",
+    "description": "Test with environment variable restaurant ID",
+    "method": "GET",
+    "path": "/api/v1/restaurants/${TEST_RESTAURANT_ID}",
+    "expectedStatus": 200,
+    "validateFields": [
+      "restaurantId",
+      "name"
+    ],
+    "partialMatch": true
+  }
+]
