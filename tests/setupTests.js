@@ -5,11 +5,30 @@ try {
   // dotenv may not be installed in some contexts
 }
 
-// Clear test execution data before running tests
-const { clearTestExecutionData } = require('./helpers/requestRunner');
-clearTestExecutionData();
-console.log('🧹 Test execution data cleared - Starting fresh test run\n');
+// Setup tokens before running tests
+const { setupTokens, loadTokens } = require('./setup-tokens');
 
-// Global Jest setup for danang_atlas tests
-// Example: increase default timeout and any global mocks
+// This runs once before all tests
+beforeAll(async () => {
+  console.log('\n🔧 Initializing test environment...');
+  
+  // Update tokens from API
+  try {
+    await setupTokens();
+  } catch (error) {
+    console.log('⚠️  Using existing tokens from variable.json');
+  }
+  
+  // Load tokens into environment for requestRunner
+  const tokens = loadTokens();
+  process.env.EXPIRED_TOKEN = tokens.EXPIRED_TOKEN;
+  process.env.VALID_TOKEN = tokens.VALID_TOKEN;
+  
+  // Clear test execution data
+  const { clearTestExecutionData } = require('./helpers/requestRunner');
+  clearTestExecutionData();
+  console.log('✅ Ready to run tests\n');
+});
+
+// Global Jest setup
 jest.setTimeout(10000);

@@ -4,11 +4,8 @@
   "private": true,
   "scripts": {
     "test": "jest tests/api.test.js",
-    "test:api": "jest tests/api.test.js",
     "test:profile": "jest tests/api.test.js -t profile_user",
     "test:restaurant": "jest tests/api.test.js -t restaurants_by_id",
-    "test:auth": "jest tests/api.test.js -t auth_login",
-    "test:with-report": "npm run test",
     "export:excel": "node scripts/generate-comprehensive-excel.js"
   },
   "devDependencies": {

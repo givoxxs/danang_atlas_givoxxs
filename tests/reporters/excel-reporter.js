@@ -2,11 +2,13 @@ const path = require('path');
 const { generateComprehensiveExcelReport, loadTestExecutionData } = require(path.join(__dirname, '../../scripts/generate-comprehensive-excel'));
 
 /**
- * Professional Custom Jest Reporter
- * Automatically generates comprehensive Excel reports after all tests complete
- * 
- * This reporter leverages detailed test execution data captured by requestRunner
- * to create multi-sheet Excel reports with complete request/response information.
+ * Custom Jest reporter that exports detailed Excel reports for profile and restaurant APIs.
+ *
+ * It reads the execution log produced by requestRunner and renders:
+ * - Summary sheet
+ * - Profile test details
+ * - Restaurant test details
+ * (Optional) Other tests if any slip through the suite
  */
 class ExcelTestReporter {
   constructor(globalConfig, options) {

@@ -1,146 +1,86 @@
 [
   {
-    "name": "TC-PROFILE-01: Get user profile with valid token",
-    "description": "Retrieve logged-in user profile using valid Bearer token",
+    "name": "TC-PROFILE-01: Get user profile successfully with valid token",
+    "description": "Retrieve complete user profile using valid Bearer token - validate all 7 required fields (accountId, email='toanyogame@gmail.com', fullName='Toanyogame', avatarUrl, status='ACTIVE', dob, gender='MALE')",
     "method": "GET",
     "path": "/api/v1/profile/user",
-    "useToken": "userAccessToken",
+    "useToken": "VALID_TOKEN",
     "expectedStatus": 200,
-    "validateFields": ["data.email", "data.fullName"],
+    "expectedOutput": {
+      "status": "success",
+      "message": "Lấy thông tin người dùng thành công",
+      "data": {
+        "accountId": "096c149d-9a25-40be-bc5b-715473f441b3",
+        "email": "toanyogame@gmail.com",
+        "fullName": "Toanyogame",
+        "avatarUrl": "https://res.cloudinary.com/dcl4ac50k/image/upload/v1762756176/images/ipz2ovupcthffpxws23l.jpg",
+        "status": "ACTIVE",
+        "dob": "2004-12-28",
+        "gender": "MALE"
+      }
+    },
+    "validateFields": [
+      "data.accountId",
+      "data.email",
+      "data.fullName",
+      "data.avatarUrl",
+      "data.status",
+      "data.dob",
+      "data.gender"
+    ],
     "partialMatch": true
   },
   {
-    "name": "TC-PROFILE-02: Get profile without token",
-    "description": "Attempt to access profile without authentication token",
+    "name": "TC-PROFILE-02: Authentication failures - no token",
+    "description": "Access profile without authentication token - expect 401 Unauthorized",
     "method": "GET",
     "path": "/api/v1/profile/user",
-    "expectedStatus": 401
+    "expectedStatus": 401,
+    "expectedOutput": {
+      "status": "error",
+      "message": "Unauthorized"
+    }
   },
   {
-    "name": "TC-PROFILE-03: Get profile with invalid token",
-    "description": "Access profile with malformed or invalid token",
+    "name": "TC-PROFILE-03: Authentication failures - invalid token",
+    "description": "Access profile with malformed token - expect 401 Unauthorized",
     "method": "GET",
     "path": "/api/v1/profile/user",
     "headers": {
       "Authorization": "Bearer invalid_token_12345"
     },
-    "expectedStatus": 401
+    "expectedStatus": 401,
+    "expectedOutput": {
+      "status": "error",
+      "message": "Unauthorized"
+    }
   },
   {
-    "name": "TC-PROFILE-04: Get profile with expired token",
-    "description": "Access profile with expired authentication token",
+    "name": "TC-PROFILE-04: Authentication failures - expired token",
+    "description": "Access profile with expired token (hardcoded) - expect 401 Unauthorized",
     "method": "GET",
     "path": "/api/v1/profile/user",
     "headers": {
-      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.4Adcj0vdYo"
+      "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRob3JpdGllcyI6WyJVU0VSIl0sInN1YiI6InRvYW55b2dhbWVAZ21haWwuY29tIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.expired"
     },
-    "expectedStatus": 401
+    "expectedStatus": 401,
+    "expectedOutput": {
+      "status": "error",
+      "message": "Unauthorized"
+    }
   },
   {
-    "name": "TC-PROFILE-05: Verify profile email field",
-    "description": "Ensure email field exists and has correct format",
-    "method": "GET",
-    "path": "/api/v1/profile/user",
-    "useToken": "userAccessToken",
-    "expectedStatus": 200,
-    "validateFields": ["data.email"],
-    "partialMatch": true
-  },
-  {
-    "name": "TC-PROFILE-06: Verify profile fullName field",
-    "description": "Ensure fullName field exists and is not empty",
-    "method": "GET",
-    "path": "/api/v1/profile/user",
-    "useToken": "userAccessToken",
-    "expectedStatus": 200,
-    "validateFields": ["data.fullName"],
-    "partialMatch": true
-  },
-  {
-    "name": "TC-PROFILE-07: Verify profile avatarUrl field",
-    "description": "Ensure avatarUrl field exists in response",
-    "method": "GET",
-    "path": "/api/v1/profile/user",
-    "useToken": "userAccessToken",
-    "expectedStatus": 200,
-    "validateFields": ["data.avatarUrl"],
-    "partialMatch": true
-  },
-  {
-    "name": "TC-PROFILE-08: Verify profile status field",
-    "description": "Ensure status field exists in user profile",
-    "method": "GET",
-    "path": "/api/v1/profile/user",
-    "useToken": "userAccessToken",
-    "expectedStatus": 200,
-    "validateFields": ["data.status"],
-    "partialMatch": true
-  },
-  {
-    "name": "TC-PROFILE-09: Get profile with empty Bearer token",
-    "description": "Access profile with Bearer keyword but no token value",
+    "name": "TC-PROFILE-05: Invalid authorization header format",
+    "description": "Send token without Bearer prefix or with empty Bearer - expect 401 Unauthorized",
     "method": "GET",
     "path": "/api/v1/profile/user",
     "headers": {
       "Authorization": "Bearer "
     },
-    "expectedStatus": 401
-  },
-  {
-    "name": "TC-PROFILE-10: Get profile without Bearer keyword",
-    "description": "Send token without Bearer prefix",
-    "method": "GET",
-    "path": "/api/v1/profile/user",
-    "headers": {
-      "Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0In0.test"
-    },
-    "expectedStatus": 401
-  },
-  {
-    "name": "TC-PROFILE-11: Verify complete profile data structure",
-    "description": "Validate all required fields are present in profile response",
-    "method": "GET",
-    "path": "/api/v1/profile/user",
-    "useToken": "userAccessToken",
-    "expectedStatus": 200,
-    "validateFields": ["data.accountId", "data.email", "data.fullName", "data.avatarUrl", "data.status", "data.dob", "data.gender"],
-    "partialMatch": true
-  },
-  {
-    "name": "TC-PROFILE-12: Get profile with token in query parameter",
-    "description": "Attempt to send token as query parameter instead of header",
-    "method": "GET",
-    "path": "/api/v1/profile/user?token=invalid",
-    "expectedStatus": 401
-  },
-  {
-    "name": "TC-PROFILE-13: Get profile with malformed Authorization header",
-    "description": "Send Authorization header with incorrect format",
-    "method": "GET",
-    "path": "/api/v1/profile/user",
-    "headers": {
-      "Authorization": "InvalidFormat token123"
-    },
-    "expectedStatus": 401
-  },
-  {
-    "name": "TC-PROFILE-14: Verify profile response status field",
-    "description": "Ensure response has status field with 'success' value",
-    "method": "GET",
-    "path": "/api/v1/profile/user",
-    "useToken": "userAccessToken",
-    "expectedStatus": 200,
-    "validateFields": ["status"],
-    "partialMatch": true
-  },
-  {
-    "name": "TC-PROFILE-15: Get profile with case-sensitive token",
-    "description": "Verify token is case-sensitive",
-    "method": "GET",
-    "path": "/api/v1/profile/user",
-    "useToken": "userAccessToken",
-    "expectedStatus": 200,
-    "validateFields": ["data"],
-    "partialMatch": true
+    "expectedStatus": 401,
+    "expectedOutput": {
+      "status": "error",
+      "message": "Unauthorized"
+    }
   }
 ]

@@ -1,563 +1,25 @@
 [
   {
     "testCase": {
-      "name": "TC-AUTH-01: Login with valid credentials",
-      "description": "Test login API with valid email and password",
-      "method": "POST",
-      "path": "/api/v1/auth/login",
-      "body": {
-        "email": "toanyogame@gmail.com",
-        "password": "Toan@1234"
-      },
+      "name": "TC-PROFILE-01: Get user profile successfully with valid token",
+      "description": "Retrieve complete user profile using valid Bearer token - validate all 7 required fields (accountId, email='toanyogame@gmail.com', fullName='Toanyogame', avatarUrl, status='ACTIVE', dob, gender='MALE')",
+      "method": "GET",
+      "path": "/api/v1/profile/user",
+      "useToken": "VALID_TOKEN",
       "expectedStatus": 200,
-      "saveToken": "data.token",
-      "saveTokenAs": "userAccessToken",
-      "validateFields": [
-        "data.token",
-        "data.email",
-        "data.fullName"
-      ],
-      "partialMatch": true
-    },
-    "request": {
-      "method": "POST",
-      "url": "https://danangculinaryatlas.site/api/v1/auth/login",
-      "headers": {},
-      "body": {
-        "email": "toanyogame@gmail.com",
-        "password": "Toan@1234"
-      }
-    },
-    "expectedStatus": 200,
-    "expectedResponse": [
-      "data.token",
-      "data.email",
-      "data.fullName"
-    ],
-    "actualStatus": 200,
-    "actualResponse": {
-      "status": "success",
-      "message": "Đăng nhập thành công",
-      "data": {
-        "token": "eyJhbGciOiJIUzI1NiJ9.eyJhdXRob3JpdGllcyI6WyJVU0VSIl0sInN1YiI6InRvYW55b2dhbWVAZ21haWwuY29tIiwiaWF0IjoxNzYyODcyMzI0LCJleHAiOjE3NjI5NTg3MjR9.rlFcdY4N3VBHR7gA334nlCduCl3nyc-SMJCRW0CPqAo",
-        "tokenType": "Bearer",
-        "email": "toanyogame@gmail.com",
-        "fullName": "Toanyogame",
-        "avatarUrl": "https://res.cloudinary.com/dcl4ac50k/image/upload/v1762756176/images/ipz2ovupcthffpxws23l.jpg",
-        "roles": [
-          "USER"
-        ]
-      }
-    },
-    "result": "PASS",
-    "duration": 315,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:24.546Z"
-  },
-  {
-    "testCase": {
-      "name": "TC-AUTH-02: Login with invalid email",
-      "description": "Test login with non-existent email",
-      "method": "POST",
-      "path": "/api/v1/auth/login",
-      "body": {
-        "email": "invalid@test.com",
-        "password": "WrongPassword123"
+      "expectedOutput": {
+        "status": "success",
+        "message": "Lấy thông tin người dùng thành công",
+        "data": {
+          "accountId": "096c149d-9a25-40be-bc5b-715473f441b3",
+          "email": "toanyogame@gmail.com",
+          "fullName": "Toanyogame",
+          "avatarUrl": "https://res.cloudinary.com/dcl4ac50k/image/upload/v1762756176/images/ipz2ovupcthffpxws23l.jpg",
+          "status": "ACTIVE",
+          "dob": "2004-12-28",
+          "gender": "MALE"
+        }
       },
-      "expectedStatus": 400
-    },
-    "request": {
-      "method": "POST",
-      "url": "https://danangculinaryatlas.site/api/v1/auth/login",
-      "headers": {},
-      "body": {
-        "email": "invalid@test.com",
-        "password": "WrongPassword123"
-      }
-    },
-    "expectedStatus": 400,
-    "expectedResponse": null,
-    "actualStatus": 400,
-    "actualResponse": {
-      "status": "error",
-      "message": "Email hoặc mật khẩu không chính xác"
-    },
-    "result": "PASS",
-    "duration": 259,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:24.807Z"
-  },
-  {
-    "testCase": {
-      "name": "TC-AUTH-03: Login with missing password",
-      "description": "Test login with missing password field",
-      "method": "POST",
-      "path": "/api/v1/auth/login",
-      "body": {
-        "email": "toanyogame@gmail.com"
-      },
-      "expectedStatus": 400
-    },
-    "request": {
-      "method": "POST",
-      "url": "https://danangculinaryatlas.site/api/v1/auth/login",
-      "headers": {},
-      "body": {
-        "email": "toanyogame@gmail.com"
-      }
-    },
-    "expectedStatus": 400,
-    "expectedResponse": null,
-    "actualStatus": 400,
-    "actualResponse": {
-      "status": "error",
-      "message": "Mật khẩu không được để trống"
-    },
-    "result": "PASS",
-    "duration": 46,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:24.854Z"
-  },
-  {
-    "testCase": {
-      "name": "TC-AUTH-04: Login with invalid password",
-      "description": "Test login with valid email but wrong password",
-      "method": "POST",
-      "path": "/api/v1/auth/login",
-      "body": {
-        "email": "toanyogame@gmail.com",
-        "password": "WrongPassword"
-      },
-      "expectedStatus": 400
-    },
-    "request": {
-      "method": "POST",
-      "url": "https://danangculinaryatlas.site/api/v1/auth/login",
-      "headers": {},
-      "body": {
-        "email": "toanyogame@gmail.com",
-        "password": "WrongPassword"
-      }
-    },
-    "expectedStatus": 400,
-    "expectedResponse": null,
-    "actualStatus": 400,
-    "actualResponse": {
-      "status": "error",
-      "message": "Email hoặc mật khẩu không chính xác"
-    },
-    "result": "PASS",
-    "duration": 203,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:25.058Z"
-  },
-  {
-    "testCase": {
-      "name": "TC-AUTH-05: Login with empty body",
-      "description": "Test login with no credentials provided",
-      "method": "POST",
-      "path": "/api/v1/auth/login",
-      "body": {},
-      "expectedStatus": 400
-    },
-    "request": {
-      "method": "POST",
-      "url": "https://danangculinaryatlas.site/api/v1/auth/login",
-      "headers": {},
-      "body": {}
-    },
-    "expectedStatus": 400,
-    "expectedResponse": null,
-    "actualStatus": 400,
-    "actualResponse": {
-      "status": "error",
-      "message": "Mật khẩu không được để trống"
-    },
-    "result": "PASS",
-    "duration": 49,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:25.108Z"
-  },
-  {
-    "testCase": {
-      "name": "TC-PROFILE-01: Get user profile with valid token",
-      "description": "Retrieve logged-in user profile using valid Bearer token",
-      "method": "GET",
-      "path": "/api/v1/profile/user",
-      "useToken": "userAccessToken",
-      "expectedStatus": 200,
-      "validateFields": [
-        "data.email",
-        "data.fullName"
-      ],
-      "partialMatch": true
-    },
-    "request": {
-      "method": "GET",
-      "url": "https://danangculinaryatlas.site/api/v1/profile/user",
-      "headers": {
-        "Authorization": "Bearer [TOKEN]"
-      },
-      "body": null
-    },
-    "expectedStatus": 200,
-    "expectedResponse": [
-      "data.email",
-      "data.fullName"
-    ],
-    "actualStatus": 200,
-    "actualResponse": {
-      "status": "success",
-      "message": "Lấy thông tin người dùng thành công",
-      "data": {
-        "accountId": "096c149d-9a25-40be-bc5b-715473f441b3",
-        "email": "toanyogame@gmail.com",
-        "fullName": "Toanyogame",
-        "avatarUrl": "https://res.cloudinary.com/dcl4ac50k/image/upload/v1762756176/images/ipz2ovupcthffpxws23l.jpg",
-        "status": "ACTIVE",
-        "dob": "2004-12-28",
-        "gender": "MALE"
-      }
-    },
-    "result": "PASS",
-    "duration": 76,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:25.185Z"
-  },
-  {
-    "testCase": {
-      "name": "TC-PROFILE-02: Get profile without token",
-      "description": "Attempt to access profile without authentication token",
-      "method": "GET",
-      "path": "/api/v1/profile/user",
-      "expectedStatus": 401
-    },
-    "request": {
-      "method": "GET",
-      "url": "https://danangculinaryatlas.site/api/v1/profile/user",
-      "headers": {},
-      "body": null
-    },
-    "expectedStatus": 401,
-    "expectedResponse": null,
-    "actualStatus": 401,
-    "actualResponse": {
-      "status": "error",
-      "message": "Unauthorized"
-    },
-    "result": "PASS",
-    "duration": 43,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:25.230Z"
-  },
-  {
-    "testCase": {
-      "name": "TC-PROFILE-03: Get profile with invalid token",
-      "description": "Access profile with malformed or invalid token",
-      "method": "GET",
-      "path": "/api/v1/profile/user",
-      "headers": {
-        "Authorization": "Bearer invalid_token_12345"
-      },
-      "expectedStatus": 401
-    },
-    "request": {
-      "method": "GET",
-      "url": "https://danangculinaryatlas.site/api/v1/profile/user",
-      "headers": {
-        "Authorization": "Bearer invalid_token_12345"
-      },
-      "body": null
-    },
-    "expectedStatus": 401,
-    "expectedResponse": null,
-    "actualStatus": 401,
-    "actualResponse": {
-      "status": "error",
-      "message": "Unauthorized"
-    },
-    "result": "PASS",
-    "duration": 43,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:25.274Z"
-  },
-  {
-    "testCase": {
-      "name": "TC-PROFILE-04: Get profile with expired token",
-      "description": "Access profile with expired authentication token",
-      "method": "GET",
-      "path": "/api/v1/profile/user",
-      "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.4Adcj0vdYo"
-      },
-      "expectedStatus": 401
-    },
-    "request": {
-      "method": "GET",
-      "url": "https://danangculinaryatlas.site/api/v1/profile/user",
-      "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.4Adcj0vdYo"
-      },
-      "body": null
-    },
-    "expectedStatus": 401,
-    "expectedResponse": null,
-    "actualStatus": 401,
-    "actualResponse": {
-      "status": "error",
-      "message": "Unauthorized"
-    },
-    "result": "PASS",
-    "duration": 43,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:25.319Z"
-  },
-  {
-    "testCase": {
-      "name": "TC-PROFILE-05: Verify profile email field",
-      "description": "Ensure email field exists and has correct format",
-      "method": "GET",
-      "path": "/api/v1/profile/user",
-      "useToken": "userAccessToken",
-      "expectedStatus": 200,
-      "validateFields": [
-        "data.email"
-      ],
-      "partialMatch": true
-    },
-    "request": {
-      "method": "GET",
-      "url": "https://danangculinaryatlas.site/api/v1/profile/user",
-      "headers": {
-        "Authorization": "Bearer [TOKEN]"
-      },
-      "body": null
-    },
-    "expectedStatus": 200,
-    "expectedResponse": [
-      "data.email"
-    ],
-    "actualStatus": 200,
-    "actualResponse": {
-      "status": "success",
-      "message": "Lấy thông tin người dùng thành công",
-      "data": {
-        "accountId": "096c149d-9a25-40be-bc5b-715473f441b3",
-        "email": "toanyogame@gmail.com",
-        "fullName": "Toanyogame",
-        "avatarUrl": "https://res.cloudinary.com/dcl4ac50k/image/upload/v1762756176/images/ipz2ovupcthffpxws23l.jpg",
-        "status": "ACTIVE",
-        "dob": "2004-12-28",
-        "gender": "MALE"
-      }
-    },
-    "result": "PASS",
-    "duration": 58,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:25.378Z"
-  },
-  {
-    "testCase": {
-      "name": "TC-PROFILE-06: Verify profile fullName field",
-      "description": "Ensure fullName field exists and is not empty",
-      "method": "GET",
-      "path": "/api/v1/profile/user",
-      "useToken": "userAccessToken",
-      "expectedStatus": 200,
-      "validateFields": [
-        "data.fullName"
-      ],
-      "partialMatch": true
-    },
-    "request": {
-      "method": "GET",
-      "url": "https://danangculinaryatlas.site/api/v1/profile/user",
-      "headers": {
-        "Authorization": "Bearer [TOKEN]"
-      },
-      "body": null
-    },
-    "expectedStatus": 200,
-    "expectedResponse": [
-      "data.fullName"
-    ],
-    "actualStatus": 200,
-    "actualResponse": {
-      "status": "success",
-      "message": "Lấy thông tin người dùng thành công",
-      "data": {
-        "accountId": "096c149d-9a25-40be-bc5b-715473f441b3",
-        "email": "toanyogame@gmail.com",
-        "fullName": "Toanyogame",
-        "avatarUrl": "https://res.cloudinary.com/dcl4ac50k/image/upload/v1762756176/images/ipz2ovupcthffpxws23l.jpg",
-        "status": "ACTIVE",
-        "dob": "2004-12-28",
-        "gender": "MALE"
-      }
-    },
-    "result": "PASS",
-    "duration": 66,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:25.445Z"
-  },
-  {
-    "testCase": {
-      "name": "TC-PROFILE-07: Verify profile avatarUrl field",
-      "description": "Ensure avatarUrl field exists in response",
-      "method": "GET",
-      "path": "/api/v1/profile/user",
-      "useToken": "userAccessToken",
-      "expectedStatus": 200,
-      "validateFields": [
-        "data.avatarUrl"
-      ],
-      "partialMatch": true
-    },
-    "request": {
-      "method": "GET",
-      "url": "https://danangculinaryatlas.site/api/v1/profile/user",
-      "headers": {
-        "Authorization": "Bearer [TOKEN]"
-      },
-      "body": null
-    },
-    "expectedStatus": 200,
-    "expectedResponse": [
-      "data.avatarUrl"
-    ],
-    "actualStatus": 200,
-    "actualResponse": {
-      "status": "success",
-      "message": "Lấy thông tin người dùng thành công",
-      "data": {
-        "accountId": "096c149d-9a25-40be-bc5b-715473f441b3",
-        "email": "toanyogame@gmail.com",
-        "fullName": "Toanyogame",
-        "avatarUrl": "https://res.cloudinary.com/dcl4ac50k/image/upload/v1762756176/images/ipz2ovupcthffpxws23l.jpg",
-        "status": "ACTIVE",
-        "dob": "2004-12-28",
-        "gender": "MALE"
-      }
-    },
-    "result": "PASS",
-    "duration": 72,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:25.518Z"
-  },
-  {
-    "testCase": {
-      "name": "TC-PROFILE-08: Verify profile status field",
-      "description": "Ensure status field exists in user profile",
-      "method": "GET",
-      "path": "/api/v1/profile/user",
-      "useToken": "userAccessToken",
-      "expectedStatus": 200,
-      "validateFields": [
-        "data.status"
-      ],
-      "partialMatch": true
-    },
-    "request": {
-      "method": "GET",
-      "url": "https://danangculinaryatlas.site/api/v1/profile/user",
-      "headers": {
-        "Authorization": "Bearer [TOKEN]"
-      },
-      "body": null
-    },
-    "expectedStatus": 200,
-    "expectedResponse": [
-      "data.status"
-    ],
-    "actualStatus": 200,
-    "actualResponse": {
-      "status": "success",
-      "message": "Lấy thông tin người dùng thành công",
-      "data": {
-        "accountId": "096c149d-9a25-40be-bc5b-715473f441b3",
-        "email": "toanyogame@gmail.com",
-        "fullName": "Toanyogame",
-        "avatarUrl": "https://res.cloudinary.com/dcl4ac50k/image/upload/v1762756176/images/ipz2ovupcthffpxws23l.jpg",
-        "status": "ACTIVE",
-        "dob": "2004-12-28",
-        "gender": "MALE"
-      }
-    },
-    "result": "PASS",
-    "duration": 70,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:25.589Z"
-  },
-  {
-    "testCase": {
-      "name": "TC-PROFILE-09: Get profile with empty Bearer token",
-      "description": "Access profile with Bearer keyword but no token value",
-      "method": "GET",
-      "path": "/api/v1/profile/user",
-      "headers": {
-        "Authorization": "Bearer "
-      },
-      "expectedStatus": 401
-    },
-    "request": {
-      "method": "GET",
-      "url": "https://danangculinaryatlas.site/api/v1/profile/user",
-      "headers": {
-        "Authorization": "Bearer "
-      },
-      "body": null
-    },
-    "expectedStatus": 401,
-    "expectedResponse": null,
-    "actualStatus": 401,
-    "actualResponse": {
-      "status": "error",
-      "message": "Unauthorized"
-    },
-    "result": "PASS",
-    "duration": 43,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:25.633Z"
-  },
-  {
-    "testCase": {
-      "name": "TC-PROFILE-10: Get profile without Bearer keyword",
-      "description": "Send token without Bearer prefix",
-      "method": "GET",
-      "path": "/api/v1/profile/user",
-      "headers": {
-        "Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0In0.test"
-      },
-      "expectedStatus": 401
-    },
-    "request": {
-      "method": "GET",
-      "url": "https://danangculinaryatlas.site/api/v1/profile/user",
-      "headers": {
-        "Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0In0.test"
-      },
-      "body": null
-    },
-    "expectedStatus": 401,
-    "expectedResponse": null,
-    "actualStatus": 401,
-    "actualResponse": {
-      "status": "error",
-      "message": "Unauthorized"
-    },
-    "result": "PASS",
-    "duration": 43,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:25.677Z"
-  },
-  {
-    "testCase": {
-      "name": "TC-PROFILE-11: Verify complete profile data structure",
-      "description": "Validate all required fields are present in profile response",
-      "method": "GET",
-      "path": "/api/v1/profile/user",
-      "useToken": "userAccessToken",
-      "expectedStatus": 200,
       "validateFields": [
         "data.accountId",
         "data.email",
@@ -573,20 +35,25 @@
       "method": "GET",
       "url": "https://danangculinaryatlas.site/api/v1/profile/user",
       "headers": {
-        "Authorization": "Bearer [TOKEN]"
+        "Authorization": "Bearer [REDACTED]"
       },
-      "body": null
+      "body": null,
+      "duration": 516
     },
     "expectedStatus": 200,
-    "expectedResponse": [
-      "data.accountId",
-      "data.email",
-      "data.fullName",
-      "data.avatarUrl",
-      "data.status",
-      "data.dob",
-      "data.gender"
-    ],
+    "expectedResponse": {
+      "status": "success",
+      "message": "Lấy thông tin người dùng thành công",
+      "data": {
+        "accountId": "096c149d-9a25-40be-bc5b-715473f441b3",
+        "email": "toanyogame@gmail.com",
+        "fullName": "Toanyogame",
+        "avatarUrl": "https://res.cloudinary.com/dcl4ac50k/image/upload/v1762756176/images/ipz2ovupcthffpxws23l.jpg",
+        "status": "ACTIVE",
+        "dob": "2004-12-28",
+        "gender": "MALE"
+      }
+    },
     "actualStatus": 200,
     "actualResponse": {
       "status": "success",
@@ -602,253 +69,176 @@
       }
     },
     "result": "PASS",
-    "duration": 59,
+    "duration": 516,
     "error": "",
-    "timestamp": "2025-11-11T14:45:25.737Z"
+    "timestamp": "2025-11-12T01:26:40.995Z"
   },
   {
     "testCase": {
-      "name": "TC-PROFILE-12: Get profile with token in query parameter",
-      "description": "Attempt to send token as query parameter instead of header",
+      "name": "TC-PROFILE-02: Authentication failures - no token",
+      "description": "Access profile without authentication token - expect 401 Unauthorized",
       "method": "GET",
-      "path": "/api/v1/profile/user?token=invalid",
-      "expectedStatus": 401
+      "path": "/api/v1/profile/user",
+      "expectedStatus": 401,
+      "expectedOutput": {
+        "status": "error",
+        "message": "Unauthorized"
+      }
     },
     "request": {
       "method": "GET",
-      "url": "https://danangculinaryatlas.site/api/v1/profile/user?token=invalid",
+      "url": "https://danangculinaryatlas.site/api/v1/profile/user",
       "headers": {},
-      "body": null
+      "body": null,
+      "duration": 117
     },
     "expectedStatus": 401,
-    "expectedResponse": null,
+    "expectedResponse": {
+      "status": "error",
+      "message": "Unauthorized"
+    },
     "actualStatus": 401,
     "actualResponse": {
       "status": "error",
       "message": "Unauthorized"
     },
     "result": "PASS",
-    "duration": 42,
+    "duration": 117,
     "error": "",
-    "timestamp": "2025-11-11T14:45:25.780Z"
+    "timestamp": "2025-11-12T01:26:41.114Z"
   },
   {
     "testCase": {
-      "name": "TC-PROFILE-13: Get profile with malformed Authorization header",
-      "description": "Send Authorization header with incorrect format",
+      "name": "TC-PROFILE-03: Authentication failures - invalid token",
+      "description": "Access profile with malformed token - expect 401 Unauthorized",
       "method": "GET",
       "path": "/api/v1/profile/user",
       "headers": {
-        "Authorization": "InvalidFormat token123"
+        "Authorization": "Bearer invalid_token_12345"
       },
-      "expectedStatus": 401
+      "expectedStatus": 401,
+      "expectedOutput": {
+        "status": "error",
+        "message": "Unauthorized"
+      }
     },
     "request": {
       "method": "GET",
       "url": "https://danangculinaryatlas.site/api/v1/profile/user",
       "headers": {
-        "Authorization": "InvalidFormat token123"
+        "Authorization": "Bearer [REDACTED]"
       },
-      "body": null
+      "body": null,
+      "duration": 95
     },
     "expectedStatus": 401,
-    "expectedResponse": null,
+    "expectedResponse": {
+      "status": "error",
+      "message": "Unauthorized"
+    },
     "actualStatus": 401,
     "actualResponse": {
       "status": "error",
       "message": "Unauthorized"
     },
     "result": "PASS",
-    "duration": 41,
+    "duration": 95,
     "error": "",
-    "timestamp": "2025-11-11T14:45:25.822Z"
+    "timestamp": "2025-11-12T01:26:41.210Z"
   },
   {
     "testCase": {
-      "name": "TC-PROFILE-14: Verify profile response status field",
-      "description": "Ensure response has status field with 'success' value",
+      "name": "TC-PROFILE-04: Authentication failures - expired token",
+      "description": "Access profile with expired token (hardcoded) - expect 401 Unauthorized",
       "method": "GET",
       "path": "/api/v1/profile/user",
-      "useToken": "userAccessToken",
-      "expectedStatus": 200,
-      "validateFields": [
-        "status"
-      ],
-      "partialMatch": true
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRob3JpdGllcyI6WyJVU0VSIl0sInN1YiI6InRvYW55b2dhbWVAZ21haWwuY29tIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.expired"
+      },
+      "expectedStatus": 401,
+      "expectedOutput": {
+        "status": "error",
+        "message": "Unauthorized"
+      }
     },
     "request": {
       "method": "GET",
       "url": "https://danangculinaryatlas.site/api/v1/profile/user",
       "headers": {
-        "Authorization": "Bearer [TOKEN]"
+        "Authorization": "Bearer [REDACTED]"
       },
-      "body": null
+      "body": null,
+      "duration": 106
     },
-    "expectedStatus": 200,
-    "expectedResponse": [
-      "status"
-    ],
-    "actualStatus": 200,
+    "expectedStatus": 401,
+    "expectedResponse": {
+      "status": "error",
+      "message": "Unauthorized"
+    },
+    "actualStatus": 401,
     "actualResponse": {
-      "status": "success",
-      "message": "Lấy thông tin người dùng thành công",
-      "data": {
-        "accountId": "096c149d-9a25-40be-bc5b-715473f441b3",
-        "email": "toanyogame@gmail.com",
-        "fullName": "Toanyogame",
-        "avatarUrl": "https://res.cloudinary.com/dcl4ac50k/image/upload/v1762756176/images/ipz2ovupcthffpxws23l.jpg",
-        "status": "ACTIVE",
-        "dob": "2004-12-28",
-        "gender": "MALE"
-      }
+      "status": "error",
+      "message": "Unauthorized"
     },
     "result": "PASS",
-    "duration": 55,
+    "duration": 106,
     "error": "",
-    "timestamp": "2025-11-11T14:45:25.879Z"
+    "timestamp": "2025-11-12T01:26:41.318Z"
   },
   {
     "testCase": {
-      "name": "TC-PROFILE-15: Get profile with case-sensitive token",
-      "description": "Verify token is case-sensitive",
+      "name": "TC-PROFILE-05: Invalid authorization header format",
+      "description": "Send token without Bearer prefix or with empty Bearer - expect 401 Unauthorized",
       "method": "GET",
       "path": "/api/v1/profile/user",
-      "useToken": "userAccessToken",
-      "expectedStatus": 200,
-      "validateFields": [
-        "data"
-      ],
-      "partialMatch": true
+      "headers": {
+        "Authorization": "Bearer "
+      },
+      "expectedStatus": 401,
+      "expectedOutput": {
+        "status": "error",
+        "message": "Unauthorized"
+      }
     },
     "request": {
       "method": "GET",
       "url": "https://danangculinaryatlas.site/api/v1/profile/user",
       "headers": {
-        "Authorization": "Bearer [TOKEN]"
+        "Authorization": "Bearer [REDACTED]"
       },
-      "body": null
+      "body": null,
+      "duration": 198
     },
-    "expectedStatus": 200,
-    "expectedResponse": [
-      "data"
-    ],
-    "actualStatus": 200,
+    "expectedStatus": 401,
+    "expectedResponse": {
+      "status": "error",
+      "message": "Unauthorized"
+    },
+    "actualStatus": 401,
     "actualResponse": {
-      "status": "success",
-      "message": "Lấy thông tin người dùng thành công",
-      "data": {
-        "accountId": "096c149d-9a25-40be-bc5b-715473f441b3",
-        "email": "toanyogame@gmail.com",
-        "fullName": "Toanyogame",
-        "avatarUrl": "https://res.cloudinary.com/dcl4ac50k/image/upload/v1762756176/images/ipz2ovupcthffpxws23l.jpg",
+      "status": "error",
+      "message": "Unauthorized"
+    },
+    "result": "PASS",
+    "duration": 198,
+    "error": "",
+    "timestamp": "2025-11-12T01:26:41.518Z"
+  },
+  {
+    "testCase": {
+      "name": "TC-REST-01: Get restaurant detail with valid ID - complete validation",
+      "description": "Retrieve restaurant details with all required fields - expect name='The Pizza Company', status='ACTIVE', validate images, coordinates, opening hours, rating info",
+      "method": "GET",
+      "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
+      "expectedStatus": 200,
+      "expectedOutput": {
+        "restaurantId": "46284e0f-d935-429c-960f-3448df512f1f",
+        "name": "The Pizza Company",
+        "address": "1 Đ. Nguyễn Văn Linh, Phước Ninh, Hải Châu, Đà Nẵng 550000, Việt Nam",
         "status": "ACTIVE",
-        "dob": "2004-12-28",
-        "gender": "MALE"
-      }
-    },
-    "result": "PASS",
-    "duration": 57,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:25.936Z"
-  },
-  {
-    "testCase": {
-      "name": "TC01: Get restaurant detail with valid ID",
-      "description": "Retrieve restaurant details with existing restaurant ID",
-      "method": "GET",
-      "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
-      "expectedStatus": 200,
-      "validateFields": [
-        "restaurantId",
-        "name",
-        "address",
-        "images",
-        "latitude",
-        "longitude",
-        "averageRating"
-      ],
-      "partialMatch": true
-    },
-    "request": {
-      "method": "GET",
-      "url": "https://danangculinaryatlas.site/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
-      "headers": {},
-      "body": null
-    },
-    "expectedStatus": 200,
-    "expectedResponse": [
-      "restaurantId",
-      "name",
-      "address",
-      "images",
-      "latitude",
-      "longitude",
-      "averageRating"
-    ],
-    "actualStatus": 200,
-    "actualResponse": {
-      "restaurantId": "46284e0f-d935-429c-960f-3448df512f1f",
-      "ownerAccountId": "90e5e690-c0a1-4409-b774-d8021788fe39",
-      "name": "The Pizza Company",
-      "address": "1 Đ. Nguyễn Văn Linh, Phước Ninh, Hải Châu, Đà Nẵng 550000, Việt Nam",
-      "images": {
-        "photo": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSybTbaQzmP-llGzslxVcKLwYapbdsF0KBq2hJSz0DDrkvlv5xavrX4ZC9-AE5fl75gB_J2m_bShvuuXZ1vfYqEhpvhVFtKb10mZ4Qpla8Ej1DQ6djLwihTCWMJyjPUVdsPP6y9GKA=w4000-h3000-k-no",
-        "sub_photo": [
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyVfWh1mMTwuEwd7sN_s6xONIOoX2FzV8VwL6cMxSEhj14m_Bjl2uWIKyG7xn4g49Ky6xHflRrFLIB9pwT20nf4b6TN6TpvnZmNXsEoXAVA_ukzRelN_WKGAHQwkuoOaYfpEetQWZeBNLZV=w1920-h1080-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw2OczXRiyM_dsKbbM4w8AxNPfwx-VAFR56gzqe8s-WtRgUAAqKWXf9tajCF8bA6o1koM8MoTPIlTwURjdXyZFfW-Bn0KaiZ0c5dm_RkGXUYEUPgwBcXVumFvZ7m81b7mejn4vCEg=w700-h450-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyC4LwaVUFJHH-DytgvoqXcMyInEJtRQNPo40z0oXUFSe8E53jbv_hQTIjAAKn_7dfMopjqabX_dk8QvQukyoGeszr8Q-8d7LirrgF-07TOOLstTnPZBm4wHUn0WlROEaGwXK7pWkn-C78=w2992-h2992-k-no",
-          "https://lh3.googleusercontent.com/p/AF1QipMGPygo15R1zL5VwhabnUxj5vXwZWkYdZga-9CJ=w1468-h1048-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxq2cgOIxHtkNHNDwFwUTqoir1bsAazSMy9Lps2gcOFDl0acuD-pQQWp_9Deo34KgoyoFfX5_wMoylr9zhWMFv7bDOf5XLfSOWvsn3nbJL3CZ9nb0xI5qToUu2VHH0EiNIkcpfeZ5eFKhJX=w12240-h16320-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwGYb9Lxsq0jCA9ye7V6JFzrvmkHQ15eeuNCddM902qtoSmGPpSylkqXYmoNMFCYLLWIcwDi7gFwxYGUfp3dH8j7q3JVEodA5UGHWpLyjzzgruinzv4s-48Wr0VHC0vxlgTGFU=w4032-h3024-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwRj7imYmMCzej4nhxxgzsFHliewxB95sInLXHOLkHZBkgg7Yfj-L03lmC05Y-mTL670xq2MJOsZJMcOQBEiIjp38Uw_8MykRSe_dO3zIqtJzzoibsNNCKbfl_3hcefCCL-YhI=w1080-h1920-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwp9nACkm7n2-0YBywRmrkFGsZul_qolHkCNpeG_unQS5QMDUIdIkzA1deinoO1A0mvXMjuVJCIQQgXW1KyJ5PrOiN-gZJI9GDHfMCMj5rZ57UyaJFW60kWRcFz9kgxDECoGnET9uLZbiLl=w3024-h4032-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy1CdJXJamUuhLqgBixzDzlfJ-Y7riwbyGiLUjl36Wk87tWbCsWVq7Ixm4v1wjacksCcPPcEdhfUcVt_n7SnAvsKh7tZ5_eM64uzHDPHqyrwW6CxrovnWgNpRBDFCwc8eIoH6lgxQ=w4032-h2688-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxLMP8MFf-fH1pdHfrTxhB8XcJ0owPWSAhxRkRJlwujxMqfoQJDeM0BT-gHAH_jSX9-36pFT3xnw8Jsa1tnvFs2r0NN0M0keV_mFxJIaATauRYBacExWDICJAO90XvYmHyuudojvQ=w4128-h5120-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwDCQ4G77O-smVzRkUJeUAE3HtgWOscWgo4FFDNwJTGiGGxXFNdlpre2kvrxchL5aoO1nFmf4RzL-6uYwClyobNb2UYrWfGnAwgw4-EiVlpMqm3F0PYEChGjvXmk3H6pw6M2vDh5w=w4032-h2688-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx77hglADUt_to5ImWw7VLHp7uzAh7UcM5ktQn3eQGIw5LhNKIar4Xivug89z_pkmrpGxVhrH9c_JS_Ltzw7SUAVfuWycgcLClWoiWr2m_pQZH12r53ch-Kx0nQ1wArkTIxIy0G=w1125-h995-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyNqaEoxahb2yWLSDOYFGMeDBCUBzBPNhYwqZpE6UtYRnt6lhrpe8FmnyRcFtxIJh7GpiWuIXzESSuDVW6PRuPn7U9S_yiOdNPzaoenmmjelzEoC3TPVws95Y1ckvzYLIuoEXk=w1920-h1080-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwls-Sso4b1DyERuNQOqdbd0t7df_PwiUFDBU98Dm_y1E3W3Ady1x6uLYdlZ8Q2ZwmvsCxM5ndWn0nHTEcJj-hZo5SLIl_w89uVTn7FhSu2O4IHLDqV27ig9HIaVAOFvKbQuSQO14NZ66WD=w3000-h4000-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwk3H-IAgNCKCKm_CZuBdAULHqacTphRDO-5t5SGcbzXhxbcMBzW7_RhNTgp9cWbsEajU9VNo_qF3ldI4ujCBDPLFXwykPDgur121kVQQ_S6Q2s7ABE6CNHHXyRrkP-1hRYdoWL=w3024-h4032-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyr2woBwqu1F-qvhZ7eubCDMkvV-KlkcPd8NXGoJg6BBJeH4q1wKJ1H7M4SeXQ_HUY8MLGJPF03POsvtHgJm2QzH1oeE8umDU6AqgSoWwsVeu8c5kzJR-Z9OwcLwFPBF1B70tQ5=w4032-h2688-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwvkcgrT6AnC3LJATkVCuONL9MWzFcb_Mx53O2huL1Jq6Tm_NE8KDEks7wpJ8UH6zNP8nPrDcgDZn2zxgx91WsB7D_tGDcBLqJM7PnfQ8lpdonQ7h-QVm9M4WxfK62ZJa-5NSo=w4032-h3024-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzc_JeTcFYUUKvMqGLF8NzVX6cH9mJUaDkOLDM2x2pSFjscM4qV_1oKMFLbLXtmBuhlposIUNQhR_EJiKknpIKH-hZVB4iT1NQIA4vnZpfkw3HpfIrdFY8UpSXGi13kBLx2-vjw1Q=w3700-h2284-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwf892Zemf2FQXIkjgBPUbd0Q6XzZDo90N0rKsQ6DNzj6N9FRZGmduf6EaQJ4bvDJQYf-SyDvIkhMhGBcPbx1lKOLE6yrJXKVzBbW3l5kk6vkOGfgbi9SUkhyoU-lW41EfPOB_GSQ=w720-h1280-k-no"
-        ]
+        "latitude": 16.0608007,
+        "longitude": 108.2227346
       },
-      "wardId": 10,
-      "status": "ACTIVE",
-      "createdAt": "2025-10-12T13:10:53.139927",
-      "approvalStatus": "PENDING",
-      "approvedByAccountId": null,
-      "approvedAt": null,
-      "rejectionReason": null,
-      "tags": null,
-      "latitude": 16.0608007,
-      "longitude": 108.2227346,
-      "openingHours": {
-        "thứ hai": "10:00–22:00",
-        "thứ ba": "10:00–22:00",
-        "thứ tư": "10:00–22:00",
-        "thứ năm": "10:00–22:00",
-        "thứ sáu": "10:00–22:00",
-        "thứ bảy": "10:00–22:00",
-        "chủ nhật": "10:00–22:00"
-      },
-      "averageRating": 4.7,
-      "totalReviews": 50
-    },
-    "result": "PASS",
-    "duration": 51,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:25.989Z"
-  },
-  {
-    "testCase": {
-      "name": "TC02: Verify restaurant has required fields",
-      "description": "Ensure all required fields are present in response",
-      "method": "GET",
-      "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
-      "expectedStatus": 200,
       "validateFields": [
         "restaurantId",
         "ownerAccountId",
@@ -856,6 +246,14 @@
         "address",
         "wardId",
         "status",
+        "approvalStatus",
+        "images.photo",
+        "images.sub_photo",
+        "latitude",
+        "longitude",
+        "openingHours",
+        "averageRating",
+        "totalReviews",
         "createdAt"
       ],
       "partialMatch": true
@@ -864,18 +262,18 @@
       "method": "GET",
       "url": "https://danangculinaryatlas.site/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
       "headers": {},
-      "body": null
+      "body": null,
+      "duration": 108
     },
     "expectedStatus": 200,
-    "expectedResponse": [
-      "restaurantId",
-      "ownerAccountId",
-      "name",
-      "address",
-      "wardId",
-      "status",
-      "createdAt"
-    ],
+    "expectedResponse": {
+      "restaurantId": "46284e0f-d935-429c-960f-3448df512f1f",
+      "name": "The Pizza Company",
+      "address": "1 Đ. Nguyễn Văn Linh, Phước Ninh, Hải Châu, Đà Nẵng 550000, Việt Nam",
+      "status": "ACTIVE",
+      "latitude": 16.0608007,
+      "longitude": 108.2227346
+    },
     "actualStatus": 200,
     "actualResponse": {
       "restaurantId": "46284e0f-d935-429c-960f-3448df512f1f",
@@ -929,501 +327,89 @@
       "totalReviews": 50
     },
     "result": "PASS",
-    "duration": 49,
+    "duration": 108,
     "error": "",
-    "timestamp": "2025-11-11T14:45:26.039Z"
+    "timestamp": "2025-11-12T01:26:41.627Z"
   },
   {
     "testCase": {
-      "name": "TC03: Get restaurant with non-existent ID",
-      "description": "Request restaurant details with invalid UUID",
+      "name": "TC-REST-02: Get restaurant with non-existent ID",
+      "description": "Try to retrieve restaurant with ID that doesn't exist - expect 404 Not Found error",
       "method": "GET",
       "path": "/api/v1/restaurants/00000000-0000-0000-0000-000000000000",
-      "expectedStatus": 404
+      "expectedStatus": 404,
+      "expectedOutput": {
+        "status": "error",
+        "message": "Restaurant not found with ID: 00000000-0000-0000-0000-000000000000"
+      }
     },
     "request": {
       "method": "GET",
       "url": "https://danangculinaryatlas.site/api/v1/restaurants/00000000-0000-0000-0000-000000000000",
       "headers": {},
-      "body": null
+      "body": null,
+      "duration": 106
     },
     "expectedStatus": 404,
-    "expectedResponse": null,
+    "expectedResponse": {
+      "status": "error",
+      "message": "Restaurant not found with ID: 00000000-0000-0000-0000-000000000000"
+    },
     "actualStatus": 404,
     "actualResponse": {
       "status": "error",
       "message": "Restaurant not found with ID: 00000000-0000-0000-0000-000000000000"
     },
     "result": "PASS",
-    "duration": 45,
+    "duration": 106,
     "error": "",
-    "timestamp": "2025-11-11T14:45:26.085Z"
+    "timestamp": "2025-11-12T01:26:41.734Z"
   },
   {
     "testCase": {
-      "name": "TC04: Get restaurant with malformed ID",
-      "description": "Request with invalid UUID format",
+      "name": "TC-REST-03: Get restaurant with malformed ID",
+      "description": "Request with invalid UUID format - expect 400 Bad Request",
       "method": "GET",
-      "path": "/api/v1/restaurants/invalid-id-format",
-      "expectedStatus": 400
+      "path": "/api/v1/restaurants/invalid-uuid-format",
+      "expectedStatus": 400,
+      "expectedOutput": {
+        "status": "error",
+        "message": "Failed to convert value of type 'java.lang.String' to required type 'java.util.UUID'; Invalid UUID string: invalid-uuid-format"
+      }
     },
     "request": {
       "method": "GET",
-      "url": "https://danangculinaryatlas.site/api/v1/restaurants/invalid-id-format",
+      "url": "https://danangculinaryatlas.site/api/v1/restaurants/invalid-uuid-format",
       "headers": {},
-      "body": null
+      "body": null,
+      "duration": 311
     },
     "expectedStatus": 400,
-    "expectedResponse": null,
+    "expectedResponse": {
+      "status": "error",
+      "message": "Failed to convert value of type 'java.lang.String' to required type 'java.util.UUID'; Invalid UUID string: invalid-uuid-format"
+    },
     "actualStatus": 400,
     "actualResponse": {
       "status": "error",
-      "message": "Failed to convert value of type 'java.lang.String' to required type 'java.util.UUID'; Invalid UUID string: invalid-id-format"
+      "message": "Failed to convert value of type 'java.lang.String' to required type 'java.util.UUID'; Invalid UUID string: invalid-uuid-format"
     },
     "result": "PASS",
-    "duration": 45,
+    "duration": 311,
     "error": "",
-    "timestamp": "2025-11-11T14:45:26.132Z"
+    "timestamp": "2025-11-12T01:26:42.046Z"
   },
   {
     "testCase": {
-      "name": "TC05: Verify restaurant images structure",
-      "description": "Ensure images object contains photo and sub_photo arrays",
-      "method": "GET",
-      "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
-      "expectedStatus": 200,
-      "validateFields": [
-        "images.photo",
-        "images.sub_photo"
-      ],
-      "partialMatch": true
-    },
-    "request": {
-      "method": "GET",
-      "url": "https://danangculinaryatlas.site/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
-      "headers": {},
-      "body": null
-    },
-    "expectedStatus": 200,
-    "expectedResponse": [
-      "images.photo",
-      "images.sub_photo"
-    ],
-    "actualStatus": 200,
-    "actualResponse": {
-      "restaurantId": "46284e0f-d935-429c-960f-3448df512f1f",
-      "ownerAccountId": "90e5e690-c0a1-4409-b774-d8021788fe39",
-      "name": "The Pizza Company",
-      "address": "1 Đ. Nguyễn Văn Linh, Phước Ninh, Hải Châu, Đà Nẵng 550000, Việt Nam",
-      "images": {
-        "photo": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSybTbaQzmP-llGzslxVcKLwYapbdsF0KBq2hJSz0DDrkvlv5xavrX4ZC9-AE5fl75gB_J2m_bShvuuXZ1vfYqEhpvhVFtKb10mZ4Qpla8Ej1DQ6djLwihTCWMJyjPUVdsPP6y9GKA=w4000-h3000-k-no",
-        "sub_photo": [
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyVfWh1mMTwuEwd7sN_s6xONIOoX2FzV8VwL6cMxSEhj14m_Bjl2uWIKyG7xn4g49Ky6xHflRrFLIB9pwT20nf4b6TN6TpvnZmNXsEoXAVA_ukzRelN_WKGAHQwkuoOaYfpEetQWZeBNLZV=w1920-h1080-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw2OczXRiyM_dsKbbM4w8AxNPfwx-VAFR56gzqe8s-WtRgUAAqKWXf9tajCF8bA6o1koM8MoTPIlTwURjdXyZFfW-Bn0KaiZ0c5dm_RkGXUYEUPgwBcXVumFvZ7m81b7mejn4vCEg=w700-h450-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyC4LwaVUFJHH-DytgvoqXcMyInEJtRQNPo40z0oXUFSe8E53jbv_hQTIjAAKn_7dfMopjqabX_dk8QvQukyoGeszr8Q-8d7LirrgF-07TOOLstTnPZBm4wHUn0WlROEaGwXK7pWkn-C78=w2992-h2992-k-no",
-          "https://lh3.googleusercontent.com/p/AF1QipMGPygo15R1zL5VwhabnUxj5vXwZWkYdZga-9CJ=w1468-h1048-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxq2cgOIxHtkNHNDwFwUTqoir1bsAazSMy9Lps2gcOFDl0acuD-pQQWp_9Deo34KgoyoFfX5_wMoylr9zhWMFv7bDOf5XLfSOWvsn3nbJL3CZ9nb0xI5qToUu2VHH0EiNIkcpfeZ5eFKhJX=w12240-h16320-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwGYb9Lxsq0jCA9ye7V6JFzrvmkHQ15eeuNCddM902qtoSmGPpSylkqXYmoNMFCYLLWIcwDi7gFwxYGUfp3dH8j7q3JVEodA5UGHWpLyjzzgruinzv4s-48Wr0VHC0vxlgTGFU=w4032-h3024-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwRj7imYmMCzej4nhxxgzsFHliewxB95sInLXHOLkHZBkgg7Yfj-L03lmC05Y-mTL670xq2MJOsZJMcOQBEiIjp38Uw_8MykRSe_dO3zIqtJzzoibsNNCKbfl_3hcefCCL-YhI=w1080-h1920-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwp9nACkm7n2-0YBywRmrkFGsZul_qolHkCNpeG_unQS5QMDUIdIkzA1deinoO1A0mvXMjuVJCIQQgXW1KyJ5PrOiN-gZJI9GDHfMCMj5rZ57UyaJFW60kWRcFz9kgxDECoGnET9uLZbiLl=w3024-h4032-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy1CdJXJamUuhLqgBixzDzlfJ-Y7riwbyGiLUjl36Wk87tWbCsWVq7Ixm4v1wjacksCcPPcEdhfUcVt_n7SnAvsKh7tZ5_eM64uzHDPHqyrwW6CxrovnWgNpRBDFCwc8eIoH6lgxQ=w4032-h2688-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxLMP8MFf-fH1pdHfrTxhB8XcJ0owPWSAhxRkRJlwujxMqfoQJDeM0BT-gHAH_jSX9-36pFT3xnw8Jsa1tnvFs2r0NN0M0keV_mFxJIaATauRYBacExWDICJAO90XvYmHyuudojvQ=w4128-h5120-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwDCQ4G77O-smVzRkUJeUAE3HtgWOscWgo4FFDNwJTGiGGxXFNdlpre2kvrxchL5aoO1nFmf4RzL-6uYwClyobNb2UYrWfGnAwgw4-EiVlpMqm3F0PYEChGjvXmk3H6pw6M2vDh5w=w4032-h2688-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx77hglADUt_to5ImWw7VLHp7uzAh7UcM5ktQn3eQGIw5LhNKIar4Xivug89z_pkmrpGxVhrH9c_JS_Ltzw7SUAVfuWycgcLClWoiWr2m_pQZH12r53ch-Kx0nQ1wArkTIxIy0G=w1125-h995-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyNqaEoxahb2yWLSDOYFGMeDBCUBzBPNhYwqZpE6UtYRnt6lhrpe8FmnyRcFtxIJh7GpiWuIXzESSuDVW6PRuPn7U9S_yiOdNPzaoenmmjelzEoC3TPVws95Y1ckvzYLIuoEXk=w1920-h1080-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwls-Sso4b1DyERuNQOqdbd0t7df_PwiUFDBU98Dm_y1E3W3Ady1x6uLYdlZ8Q2ZwmvsCxM5ndWn0nHTEcJj-hZo5SLIl_w89uVTn7FhSu2O4IHLDqV27ig9HIaVAOFvKbQuSQO14NZ66WD=w3000-h4000-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwk3H-IAgNCKCKm_CZuBdAULHqacTphRDO-5t5SGcbzXhxbcMBzW7_RhNTgp9cWbsEajU9VNo_qF3ldI4ujCBDPLFXwykPDgur121kVQQ_S6Q2s7ABE6CNHHXyRrkP-1hRYdoWL=w3024-h4032-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyr2woBwqu1F-qvhZ7eubCDMkvV-KlkcPd8NXGoJg6BBJeH4q1wKJ1H7M4SeXQ_HUY8MLGJPF03POsvtHgJm2QzH1oeE8umDU6AqgSoWwsVeu8c5kzJR-Z9OwcLwFPBF1B70tQ5=w4032-h2688-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwvkcgrT6AnC3LJATkVCuONL9MWzFcb_Mx53O2huL1Jq6Tm_NE8KDEks7wpJ8UH6zNP8nPrDcgDZn2zxgx91WsB7D_tGDcBLqJM7PnfQ8lpdonQ7h-QVm9M4WxfK62ZJa-5NSo=w4032-h3024-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzc_JeTcFYUUKvMqGLF8NzVX6cH9mJUaDkOLDM2x2pSFjscM4qV_1oKMFLbLXtmBuhlposIUNQhR_EJiKknpIKH-hZVB4iT1NQIA4vnZpfkw3HpfIrdFY8UpSXGi13kBLx2-vjw1Q=w3700-h2284-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwf892Zemf2FQXIkjgBPUbd0Q6XzZDo90N0rKsQ6DNzj6N9FRZGmduf6EaQJ4bvDJQYf-SyDvIkhMhGBcPbx1lKOLE6yrJXKVzBbW3l5kk6vkOGfgbi9SUkhyoU-lW41EfPOB_GSQ=w720-h1280-k-no"
-        ]
-      },
-      "wardId": 10,
-      "status": "ACTIVE",
-      "createdAt": "2025-10-12T13:10:53.139927",
-      "approvalStatus": "PENDING",
-      "approvedByAccountId": null,
-      "approvedAt": null,
-      "rejectionReason": null,
-      "tags": null,
-      "latitude": 16.0608007,
-      "longitude": 108.2227346,
-      "openingHours": {
-        "thứ hai": "10:00–22:00",
-        "thứ ba": "10:00–22:00",
-        "thứ tư": "10:00–22:00",
-        "thứ năm": "10:00–22:00",
-        "thứ sáu": "10:00–22:00",
-        "thứ bảy": "10:00–22:00",
-        "chủ nhật": "10:00–22:00"
-      },
-      "averageRating": 4.7,
-      "totalReviews": 50
-    },
-    "result": "PASS",
-    "duration": 47,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:26.181Z"
-  },
-  {
-    "testCase": {
-      "name": "TC06: Verify restaurant location coordinates",
-      "description": "Ensure latitude and longitude are present and valid",
-      "method": "GET",
-      "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
-      "expectedStatus": 200,
-      "validateFields": [
-        "latitude",
-        "longitude"
-      ],
-      "partialMatch": true
-    },
-    "request": {
-      "method": "GET",
-      "url": "https://danangculinaryatlas.site/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
-      "headers": {},
-      "body": null
-    },
-    "expectedStatus": 200,
-    "expectedResponse": [
-      "latitude",
-      "longitude"
-    ],
-    "actualStatus": 200,
-    "actualResponse": {
-      "restaurantId": "46284e0f-d935-429c-960f-3448df512f1f",
-      "ownerAccountId": "90e5e690-c0a1-4409-b774-d8021788fe39",
-      "name": "The Pizza Company",
-      "address": "1 Đ. Nguyễn Văn Linh, Phước Ninh, Hải Châu, Đà Nẵng 550000, Việt Nam",
-      "images": {
-        "photo": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSybTbaQzmP-llGzslxVcKLwYapbdsF0KBq2hJSz0DDrkvlv5xavrX4ZC9-AE5fl75gB_J2m_bShvuuXZ1vfYqEhpvhVFtKb10mZ4Qpla8Ej1DQ6djLwihTCWMJyjPUVdsPP6y9GKA=w4000-h3000-k-no",
-        "sub_photo": [
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyVfWh1mMTwuEwd7sN_s6xONIOoX2FzV8VwL6cMxSEhj14m_Bjl2uWIKyG7xn4g49Ky6xHflRrFLIB9pwT20nf4b6TN6TpvnZmNXsEoXAVA_ukzRelN_WKGAHQwkuoOaYfpEetQWZeBNLZV=w1920-h1080-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw2OczXRiyM_dsKbbM4w8AxNPfwx-VAFR56gzqe8s-WtRgUAAqKWXf9tajCF8bA6o1koM8MoTPIlTwURjdXyZFfW-Bn0KaiZ0c5dm_RkGXUYEUPgwBcXVumFvZ7m81b7mejn4vCEg=w700-h450-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyC4LwaVUFJHH-DytgvoqXcMyInEJtRQNPo40z0oXUFSe8E53jbv_hQTIjAAKn_7dfMopjqabX_dk8QvQukyoGeszr8Q-8d7LirrgF-07TOOLstTnPZBm4wHUn0WlROEaGwXK7pWkn-C78=w2992-h2992-k-no",
-          "https://lh3.googleusercontent.com/p/AF1QipMGPygo15R1zL5VwhabnUxj5vXwZWkYdZga-9CJ=w1468-h1048-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxq2cgOIxHtkNHNDwFwUTqoir1bsAazSMy9Lps2gcOFDl0acuD-pQQWp_9Deo34KgoyoFfX5_wMoylr9zhWMFv7bDOf5XLfSOWvsn3nbJL3CZ9nb0xI5qToUu2VHH0EiNIkcpfeZ5eFKhJX=w12240-h16320-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwGYb9Lxsq0jCA9ye7V6JFzrvmkHQ15eeuNCddM902qtoSmGPpSylkqXYmoNMFCYLLWIcwDi7gFwxYGUfp3dH8j7q3JVEodA5UGHWpLyjzzgruinzv4s-48Wr0VHC0vxlgTGFU=w4032-h3024-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwRj7imYmMCzej4nhxxgzsFHliewxB95sInLXHOLkHZBkgg7Yfj-L03lmC05Y-mTL670xq2MJOsZJMcOQBEiIjp38Uw_8MykRSe_dO3zIqtJzzoibsNNCKbfl_3hcefCCL-YhI=w1080-h1920-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwp9nACkm7n2-0YBywRmrkFGsZul_qolHkCNpeG_unQS5QMDUIdIkzA1deinoO1A0mvXMjuVJCIQQgXW1KyJ5PrOiN-gZJI9GDHfMCMj5rZ57UyaJFW60kWRcFz9kgxDECoGnET9uLZbiLl=w3024-h4032-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy1CdJXJamUuhLqgBixzDzlfJ-Y7riwbyGiLUjl36Wk87tWbCsWVq7Ixm4v1wjacksCcPPcEdhfUcVt_n7SnAvsKh7tZ5_eM64uzHDPHqyrwW6CxrovnWgNpRBDFCwc8eIoH6lgxQ=w4032-h2688-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxLMP8MFf-fH1pdHfrTxhB8XcJ0owPWSAhxRkRJlwujxMqfoQJDeM0BT-gHAH_jSX9-36pFT3xnw8Jsa1tnvFs2r0NN0M0keV_mFxJIaATauRYBacExWDICJAO90XvYmHyuudojvQ=w4128-h5120-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwDCQ4G77O-smVzRkUJeUAE3HtgWOscWgo4FFDNwJTGiGGxXFNdlpre2kvrxchL5aoO1nFmf4RzL-6uYwClyobNb2UYrWfGnAwgw4-EiVlpMqm3F0PYEChGjvXmk3H6pw6M2vDh5w=w4032-h2688-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx77hglADUt_to5ImWw7VLHp7uzAh7UcM5ktQn3eQGIw5LhNKIar4Xivug89z_pkmrpGxVhrH9c_JS_Ltzw7SUAVfuWycgcLClWoiWr2m_pQZH12r53ch-Kx0nQ1wArkTIxIy0G=w1125-h995-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyNqaEoxahb2yWLSDOYFGMeDBCUBzBPNhYwqZpE6UtYRnt6lhrpe8FmnyRcFtxIJh7GpiWuIXzESSuDVW6PRuPn7U9S_yiOdNPzaoenmmjelzEoC3TPVws95Y1ckvzYLIuoEXk=w1920-h1080-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwls-Sso4b1DyERuNQOqdbd0t7df_PwiUFDBU98Dm_y1E3W3Ady1x6uLYdlZ8Q2ZwmvsCxM5ndWn0nHTEcJj-hZo5SLIl_w89uVTn7FhSu2O4IHLDqV27ig9HIaVAOFvKbQuSQO14NZ66WD=w3000-h4000-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwk3H-IAgNCKCKm_CZuBdAULHqacTphRDO-5t5SGcbzXhxbcMBzW7_RhNTgp9cWbsEajU9VNo_qF3ldI4ujCBDPLFXwykPDgur121kVQQ_S6Q2s7ABE6CNHHXyRrkP-1hRYdoWL=w3024-h4032-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyr2woBwqu1F-qvhZ7eubCDMkvV-KlkcPd8NXGoJg6BBJeH4q1wKJ1H7M4SeXQ_HUY8MLGJPF03POsvtHgJm2QzH1oeE8umDU6AqgSoWwsVeu8c5kzJR-Z9OwcLwFPBF1B70tQ5=w4032-h2688-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwvkcgrT6AnC3LJATkVCuONL9MWzFcb_Mx53O2huL1Jq6Tm_NE8KDEks7wpJ8UH6zNP8nPrDcgDZn2zxgx91WsB7D_tGDcBLqJM7PnfQ8lpdonQ7h-QVm9M4WxfK62ZJa-5NSo=w4032-h3024-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzc_JeTcFYUUKvMqGLF8NzVX6cH9mJUaDkOLDM2x2pSFjscM4qV_1oKMFLbLXtmBuhlposIUNQhR_EJiKknpIKH-hZVB4iT1NQIA4vnZpfkw3HpfIrdFY8UpSXGi13kBLx2-vjw1Q=w3700-h2284-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwf892Zemf2FQXIkjgBPUbd0Q6XzZDo90N0rKsQ6DNzj6N9FRZGmduf6EaQJ4bvDJQYf-SyDvIkhMhGBcPbx1lKOLE6yrJXKVzBbW3l5kk6vkOGfgbi9SUkhyoU-lW41EfPOB_GSQ=w720-h1280-k-no"
-        ]
-      },
-      "wardId": 10,
-      "status": "ACTIVE",
-      "createdAt": "2025-10-12T13:10:53.139927",
-      "approvalStatus": "PENDING",
-      "approvedByAccountId": null,
-      "approvedAt": null,
-      "rejectionReason": null,
-      "tags": null,
-      "latitude": 16.0608007,
-      "longitude": 108.2227346,
-      "openingHours": {
-        "thứ hai": "10:00–22:00",
-        "thứ ba": "10:00–22:00",
-        "thứ tư": "10:00–22:00",
-        "thứ năm": "10:00–22:00",
-        "thứ sáu": "10:00–22:00",
-        "thứ bảy": "10:00–22:00",
-        "chủ nhật": "10:00–22:00"
-      },
-      "averageRating": 4.7,
-      "totalReviews": 50
-    },
-    "result": "PASS",
-    "duration": 46,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:26.229Z"
-  },
-  {
-    "testCase": {
-      "name": "TC07: Verify restaurant opening hours",
-      "description": "Ensure openingHours object is present",
-      "method": "GET",
-      "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
-      "expectedStatus": 200,
-      "validateFields": [
-        "openingHours"
-      ],
-      "partialMatch": true
-    },
-    "request": {
-      "method": "GET",
-      "url": "https://danangculinaryatlas.site/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
-      "headers": {},
-      "body": null
-    },
-    "expectedStatus": 200,
-    "expectedResponse": [
-      "openingHours"
-    ],
-    "actualStatus": 200,
-    "actualResponse": {
-      "restaurantId": "46284e0f-d935-429c-960f-3448df512f1f",
-      "ownerAccountId": "90e5e690-c0a1-4409-b774-d8021788fe39",
-      "name": "The Pizza Company",
-      "address": "1 Đ. Nguyễn Văn Linh, Phước Ninh, Hải Châu, Đà Nẵng 550000, Việt Nam",
-      "images": {
-        "photo": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSybTbaQzmP-llGzslxVcKLwYapbdsF0KBq2hJSz0DDrkvlv5xavrX4ZC9-AE5fl75gB_J2m_bShvuuXZ1vfYqEhpvhVFtKb10mZ4Qpla8Ej1DQ6djLwihTCWMJyjPUVdsPP6y9GKA=w4000-h3000-k-no",
-        "sub_photo": [
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyVfWh1mMTwuEwd7sN_s6xONIOoX2FzV8VwL6cMxSEhj14m_Bjl2uWIKyG7xn4g49Ky6xHflRrFLIB9pwT20nf4b6TN6TpvnZmNXsEoXAVA_ukzRelN_WKGAHQwkuoOaYfpEetQWZeBNLZV=w1920-h1080-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw2OczXRiyM_dsKbbM4w8AxNPfwx-VAFR56gzqe8s-WtRgUAAqKWXf9tajCF8bA6o1koM8MoTPIlTwURjdXyZFfW-Bn0KaiZ0c5dm_RkGXUYEUPgwBcXVumFvZ7m81b7mejn4vCEg=w700-h450-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyC4LwaVUFJHH-DytgvoqXcMyInEJtRQNPo40z0oXUFSe8E53jbv_hQTIjAAKn_7dfMopjqabX_dk8QvQukyoGeszr8Q-8d7LirrgF-07TOOLstTnPZBm4wHUn0WlROEaGwXK7pWkn-C78=w2992-h2992-k-no",
-          "https://lh3.googleusercontent.com/p/AF1QipMGPygo15R1zL5VwhabnUxj5vXwZWkYdZga-9CJ=w1468-h1048-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxq2cgOIxHtkNHNDwFwUTqoir1bsAazSMy9Lps2gcOFDl0acuD-pQQWp_9Deo34KgoyoFfX5_wMoylr9zhWMFv7bDOf5XLfSOWvsn3nbJL3CZ9nb0xI5qToUu2VHH0EiNIkcpfeZ5eFKhJX=w12240-h16320-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwGYb9Lxsq0jCA9ye7V6JFzrvmkHQ15eeuNCddM902qtoSmGPpSylkqXYmoNMFCYLLWIcwDi7gFwxYGUfp3dH8j7q3JVEodA5UGHWpLyjzzgruinzv4s-48Wr0VHC0vxlgTGFU=w4032-h3024-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwRj7imYmMCzej4nhxxgzsFHliewxB95sInLXHOLkHZBkgg7Yfj-L03lmC05Y-mTL670xq2MJOsZJMcOQBEiIjp38Uw_8MykRSe_dO3zIqtJzzoibsNNCKbfl_3hcefCCL-YhI=w1080-h1920-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwp9nACkm7n2-0YBywRmrkFGsZul_qolHkCNpeG_unQS5QMDUIdIkzA1deinoO1A0mvXMjuVJCIQQgXW1KyJ5PrOiN-gZJI9GDHfMCMj5rZ57UyaJFW60kWRcFz9kgxDECoGnET9uLZbiLl=w3024-h4032-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy1CdJXJamUuhLqgBixzDzlfJ-Y7riwbyGiLUjl36Wk87tWbCsWVq7Ixm4v1wjacksCcPPcEdhfUcVt_n7SnAvsKh7tZ5_eM64uzHDPHqyrwW6CxrovnWgNpRBDFCwc8eIoH6lgxQ=w4032-h2688-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxLMP8MFf-fH1pdHfrTxhB8XcJ0owPWSAhxRkRJlwujxMqfoQJDeM0BT-gHAH_jSX9-36pFT3xnw8Jsa1tnvFs2r0NN0M0keV_mFxJIaATauRYBacExWDICJAO90XvYmHyuudojvQ=w4128-h5120-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwDCQ4G77O-smVzRkUJeUAE3HtgWOscWgo4FFDNwJTGiGGxXFNdlpre2kvrxchL5aoO1nFmf4RzL-6uYwClyobNb2UYrWfGnAwgw4-EiVlpMqm3F0PYEChGjvXmk3H6pw6M2vDh5w=w4032-h2688-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx77hglADUt_to5ImWw7VLHp7uzAh7UcM5ktQn3eQGIw5LhNKIar4Xivug89z_pkmrpGxVhrH9c_JS_Ltzw7SUAVfuWycgcLClWoiWr2m_pQZH12r53ch-Kx0nQ1wArkTIxIy0G=w1125-h995-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyNqaEoxahb2yWLSDOYFGMeDBCUBzBPNhYwqZpE6UtYRnt6lhrpe8FmnyRcFtxIJh7GpiWuIXzESSuDVW6PRuPn7U9S_yiOdNPzaoenmmjelzEoC3TPVws95Y1ckvzYLIuoEXk=w1920-h1080-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwls-Sso4b1DyERuNQOqdbd0t7df_PwiUFDBU98Dm_y1E3W3Ady1x6uLYdlZ8Q2ZwmvsCxM5ndWn0nHTEcJj-hZo5SLIl_w89uVTn7FhSu2O4IHLDqV27ig9HIaVAOFvKbQuSQO14NZ66WD=w3000-h4000-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwk3H-IAgNCKCKm_CZuBdAULHqacTphRDO-5t5SGcbzXhxbcMBzW7_RhNTgp9cWbsEajU9VNo_qF3ldI4ujCBDPLFXwykPDgur121kVQQ_S6Q2s7ABE6CNHHXyRrkP-1hRYdoWL=w3024-h4032-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyr2woBwqu1F-qvhZ7eubCDMkvV-KlkcPd8NXGoJg6BBJeH4q1wKJ1H7M4SeXQ_HUY8MLGJPF03POsvtHgJm2QzH1oeE8umDU6AqgSoWwsVeu8c5kzJR-Z9OwcLwFPBF1B70tQ5=w4032-h2688-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwvkcgrT6AnC3LJATkVCuONL9MWzFcb_Mx53O2huL1Jq6Tm_NE8KDEks7wpJ8UH6zNP8nPrDcgDZn2zxgx91WsB7D_tGDcBLqJM7PnfQ8lpdonQ7h-QVm9M4WxfK62ZJa-5NSo=w4032-h3024-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzc_JeTcFYUUKvMqGLF8NzVX6cH9mJUaDkOLDM2x2pSFjscM4qV_1oKMFLbLXtmBuhlposIUNQhR_EJiKknpIKH-hZVB4iT1NQIA4vnZpfkw3HpfIrdFY8UpSXGi13kBLx2-vjw1Q=w3700-h2284-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwf892Zemf2FQXIkjgBPUbd0Q6XzZDo90N0rKsQ6DNzj6N9FRZGmduf6EaQJ4bvDJQYf-SyDvIkhMhGBcPbx1lKOLE6yrJXKVzBbW3l5kk6vkOGfgbi9SUkhyoU-lW41EfPOB_GSQ=w720-h1280-k-no"
-        ]
-      },
-      "wardId": 10,
-      "status": "ACTIVE",
-      "createdAt": "2025-10-12T13:10:53.139927",
-      "approvalStatus": "PENDING",
-      "approvedByAccountId": null,
-      "approvedAt": null,
-      "rejectionReason": null,
-      "tags": null,
-      "latitude": 16.0608007,
-      "longitude": 108.2227346,
-      "openingHours": {
-        "thứ hai": "10:00–22:00",
-        "thứ ba": "10:00–22:00",
-        "thứ tư": "10:00–22:00",
-        "thứ năm": "10:00–22:00",
-        "thứ sáu": "10:00–22:00",
-        "thứ bảy": "10:00–22:00",
-        "chủ nhật": "10:00–22:00"
-      },
-      "averageRating": 4.7,
-      "totalReviews": 50
-    },
-    "result": "PASS",
-    "duration": 47,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:26.277Z"
-  },
-  {
-    "testCase": {
-      "name": "TC08: Verify restaurant rating information",
-      "description": "Ensure averageRating and totalReviews are present",
-      "method": "GET",
-      "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
-      "expectedStatus": 200,
-      "validateFields": [
-        "averageRating",
-        "totalReviews"
-      ],
-      "partialMatch": true
-    },
-    "request": {
-      "method": "GET",
-      "url": "https://danangculinaryatlas.site/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
-      "headers": {},
-      "body": null
-    },
-    "expectedStatus": 200,
-    "expectedResponse": [
-      "averageRating",
-      "totalReviews"
-    ],
-    "actualStatus": 200,
-    "actualResponse": {
-      "restaurantId": "46284e0f-d935-429c-960f-3448df512f1f",
-      "ownerAccountId": "90e5e690-c0a1-4409-b774-d8021788fe39",
-      "name": "The Pizza Company",
-      "address": "1 Đ. Nguyễn Văn Linh, Phước Ninh, Hải Châu, Đà Nẵng 550000, Việt Nam",
-      "images": {
-        "photo": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSybTbaQzmP-llGzslxVcKLwYapbdsF0KBq2hJSz0DDrkvlv5xavrX4ZC9-AE5fl75gB_J2m_bShvuuXZ1vfYqEhpvhVFtKb10mZ4Qpla8Ej1DQ6djLwihTCWMJyjPUVdsPP6y9GKA=w4000-h3000-k-no",
-        "sub_photo": [
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyVfWh1mMTwuEwd7sN_s6xONIOoX2FzV8VwL6cMxSEhj14m_Bjl2uWIKyG7xn4g49Ky6xHflRrFLIB9pwT20nf4b6TN6TpvnZmNXsEoXAVA_ukzRelN_WKGAHQwkuoOaYfpEetQWZeBNLZV=w1920-h1080-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw2OczXRiyM_dsKbbM4w8AxNPfwx-VAFR56gzqe8s-WtRgUAAqKWXf9tajCF8bA6o1koM8MoTPIlTwURjdXyZFfW-Bn0KaiZ0c5dm_RkGXUYEUPgwBcXVumFvZ7m81b7mejn4vCEg=w700-h450-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyC4LwaVUFJHH-DytgvoqXcMyInEJtRQNPo40z0oXUFSe8E53jbv_hQTIjAAKn_7dfMopjqabX_dk8QvQukyoGeszr8Q-8d7LirrgF-07TOOLstTnPZBm4wHUn0WlROEaGwXK7pWkn-C78=w2992-h2992-k-no",
-          "https://lh3.googleusercontent.com/p/AF1QipMGPygo15R1zL5VwhabnUxj5vXwZWkYdZga-9CJ=w1468-h1048-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxq2cgOIxHtkNHNDwFwUTqoir1bsAazSMy9Lps2gcOFDl0acuD-pQQWp_9Deo34KgoyoFfX5_wMoylr9zhWMFv7bDOf5XLfSOWvsn3nbJL3CZ9nb0xI5qToUu2VHH0EiNIkcpfeZ5eFKhJX=w12240-h16320-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwGYb9Lxsq0jCA9ye7V6JFzrvmkHQ15eeuNCddM902qtoSmGPpSylkqXYmoNMFCYLLWIcwDi7gFwxYGUfp3dH8j7q3JVEodA5UGHWpLyjzzgruinzv4s-48Wr0VHC0vxlgTGFU=w4032-h3024-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwRj7imYmMCzej4nhxxgzsFHliewxB95sInLXHOLkHZBkgg7Yfj-L03lmC05Y-mTL670xq2MJOsZJMcOQBEiIjp38Uw_8MykRSe_dO3zIqtJzzoibsNNCKbfl_3hcefCCL-YhI=w1080-h1920-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwp9nACkm7n2-0YBywRmrkFGsZul_qolHkCNpeG_unQS5QMDUIdIkzA1deinoO1A0mvXMjuVJCIQQgXW1KyJ5PrOiN-gZJI9GDHfMCMj5rZ57UyaJFW60kWRcFz9kgxDECoGnET9uLZbiLl=w3024-h4032-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy1CdJXJamUuhLqgBixzDzlfJ-Y7riwbyGiLUjl36Wk87tWbCsWVq7Ixm4v1wjacksCcPPcEdhfUcVt_n7SnAvsKh7tZ5_eM64uzHDPHqyrwW6CxrovnWgNpRBDFCwc8eIoH6lgxQ=w4032-h2688-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxLMP8MFf-fH1pdHfrTxhB8XcJ0owPWSAhxRkRJlwujxMqfoQJDeM0BT-gHAH_jSX9-36pFT3xnw8Jsa1tnvFs2r0NN0M0keV_mFxJIaATauRYBacExWDICJAO90XvYmHyuudojvQ=w4128-h5120-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwDCQ4G77O-smVzRkUJeUAE3HtgWOscWgo4FFDNwJTGiGGxXFNdlpre2kvrxchL5aoO1nFmf4RzL-6uYwClyobNb2UYrWfGnAwgw4-EiVlpMqm3F0PYEChGjvXmk3H6pw6M2vDh5w=w4032-h2688-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx77hglADUt_to5ImWw7VLHp7uzAh7UcM5ktQn3eQGIw5LhNKIar4Xivug89z_pkmrpGxVhrH9c_JS_Ltzw7SUAVfuWycgcLClWoiWr2m_pQZH12r53ch-Kx0nQ1wArkTIxIy0G=w1125-h995-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyNqaEoxahb2yWLSDOYFGMeDBCUBzBPNhYwqZpE6UtYRnt6lhrpe8FmnyRcFtxIJh7GpiWuIXzESSuDVW6PRuPn7U9S_yiOdNPzaoenmmjelzEoC3TPVws95Y1ckvzYLIuoEXk=w1920-h1080-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwls-Sso4b1DyERuNQOqdbd0t7df_PwiUFDBU98Dm_y1E3W3Ady1x6uLYdlZ8Q2ZwmvsCxM5ndWn0nHTEcJj-hZo5SLIl_w89uVTn7FhSu2O4IHLDqV27ig9HIaVAOFvKbQuSQO14NZ66WD=w3000-h4000-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwk3H-IAgNCKCKm_CZuBdAULHqacTphRDO-5t5SGcbzXhxbcMBzW7_RhNTgp9cWbsEajU9VNo_qF3ldI4ujCBDPLFXwykPDgur121kVQQ_S6Q2s7ABE6CNHHXyRrkP-1hRYdoWL=w3024-h4032-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyr2woBwqu1F-qvhZ7eubCDMkvV-KlkcPd8NXGoJg6BBJeH4q1wKJ1H7M4SeXQ_HUY8MLGJPF03POsvtHgJm2QzH1oeE8umDU6AqgSoWwsVeu8c5kzJR-Z9OwcLwFPBF1B70tQ5=w4032-h2688-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwvkcgrT6AnC3LJATkVCuONL9MWzFcb_Mx53O2huL1Jq6Tm_NE8KDEks7wpJ8UH6zNP8nPrDcgDZn2zxgx91WsB7D_tGDcBLqJM7PnfQ8lpdonQ7h-QVm9M4WxfK62ZJa-5NSo=w4032-h3024-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzc_JeTcFYUUKvMqGLF8NzVX6cH9mJUaDkOLDM2x2pSFjscM4qV_1oKMFLbLXtmBuhlposIUNQhR_EJiKknpIKH-hZVB4iT1NQIA4vnZpfkw3HpfIrdFY8UpSXGi13kBLx2-vjw1Q=w3700-h2284-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwf892Zemf2FQXIkjgBPUbd0Q6XzZDo90N0rKsQ6DNzj6N9FRZGmduf6EaQJ4bvDJQYf-SyDvIkhMhGBcPbx1lKOLE6yrJXKVzBbW3l5kk6vkOGfgbi9SUkhyoU-lW41EfPOB_GSQ=w720-h1280-k-no"
-        ]
-      },
-      "wardId": 10,
-      "status": "ACTIVE",
-      "createdAt": "2025-10-12T13:10:53.139927",
-      "approvalStatus": "PENDING",
-      "approvedByAccountId": null,
-      "approvedAt": null,
-      "rejectionReason": null,
-      "tags": null,
-      "latitude": 16.0608007,
-      "longitude": 108.2227346,
-      "openingHours": {
-        "thứ hai": "10:00–22:00",
-        "thứ ba": "10:00–22:00",
-        "thứ tư": "10:00–22:00",
-        "thứ năm": "10:00–22:00",
-        "thứ sáu": "10:00–22:00",
-        "thứ bảy": "10:00–22:00",
-        "chủ nhật": "10:00–22:00"
-      },
-      "averageRating": 4.7,
-      "totalReviews": 50
-    },
-    "result": "PASS",
-    "duration": 46,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:26.325Z"
-  },
-  {
-    "testCase": {
-      "name": "TC09: Get restaurant with empty ID",
-      "description": "Request without providing restaurant ID",
-      "method": "GET",
-      "path": "/api/v1/restaurants/",
-      "expectedStatus": 500
-    },
-    "request": {
-      "method": "GET",
-      "url": "https://danangculinaryatlas.site/api/v1/restaurants/",
-      "headers": {},
-      "body": null
-    },
-    "expectedStatus": 500,
-    "expectedResponse": null,
-    "actualStatus": 500,
-    "actualResponse": {
-      "status": "error",
-      "message": "Đã xảy ra lỗi hệ thống"
-    },
-    "result": "PASS",
-    "duration": 49,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:26.376Z"
-  },
-  {
-    "testCase": {
-      "name": "TC10: Verify restaurant status field",
-      "description": "Ensure status field exists and has valid value",
-      "method": "GET",
-      "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
-      "expectedStatus": 200,
-      "validateFields": [
-        "status",
-        "approvalStatus"
-      ],
-      "partialMatch": true
-    },
-    "request": {
-      "method": "GET",
-      "url": "https://danangculinaryatlas.site/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
-      "headers": {},
-      "body": null
-    },
-    "expectedStatus": 200,
-    "expectedResponse": [
-      "status",
-      "approvalStatus"
-    ],
-    "actualStatus": 200,
-    "actualResponse": {
-      "restaurantId": "46284e0f-d935-429c-960f-3448df512f1f",
-      "ownerAccountId": "90e5e690-c0a1-4409-b774-d8021788fe39",
-      "name": "The Pizza Company",
-      "address": "1 Đ. Nguyễn Văn Linh, Phước Ninh, Hải Châu, Đà Nẵng 550000, Việt Nam",
-      "images": {
-        "photo": "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSybTbaQzmP-llGzslxVcKLwYapbdsF0KBq2hJSz0DDrkvlv5xavrX4ZC9-AE5fl75gB_J2m_bShvuuXZ1vfYqEhpvhVFtKb10mZ4Qpla8Ej1DQ6djLwihTCWMJyjPUVdsPP6y9GKA=w4000-h3000-k-no",
-        "sub_photo": [
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyVfWh1mMTwuEwd7sN_s6xONIOoX2FzV8VwL6cMxSEhj14m_Bjl2uWIKyG7xn4g49Ky6xHflRrFLIB9pwT20nf4b6TN6TpvnZmNXsEoXAVA_ukzRelN_WKGAHQwkuoOaYfpEetQWZeBNLZV=w1920-h1080-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw2OczXRiyM_dsKbbM4w8AxNPfwx-VAFR56gzqe8s-WtRgUAAqKWXf9tajCF8bA6o1koM8MoTPIlTwURjdXyZFfW-Bn0KaiZ0c5dm_RkGXUYEUPgwBcXVumFvZ7m81b7mejn4vCEg=w700-h450-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyC4LwaVUFJHH-DytgvoqXcMyInEJtRQNPo40z0oXUFSe8E53jbv_hQTIjAAKn_7dfMopjqabX_dk8QvQukyoGeszr8Q-8d7LirrgF-07TOOLstTnPZBm4wHUn0WlROEaGwXK7pWkn-C78=w2992-h2992-k-no",
-          "https://lh3.googleusercontent.com/p/AF1QipMGPygo15R1zL5VwhabnUxj5vXwZWkYdZga-9CJ=w1468-h1048-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxq2cgOIxHtkNHNDwFwUTqoir1bsAazSMy9Lps2gcOFDl0acuD-pQQWp_9Deo34KgoyoFfX5_wMoylr9zhWMFv7bDOf5XLfSOWvsn3nbJL3CZ9nb0xI5qToUu2VHH0EiNIkcpfeZ5eFKhJX=w12240-h16320-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwGYb9Lxsq0jCA9ye7V6JFzrvmkHQ15eeuNCddM902qtoSmGPpSylkqXYmoNMFCYLLWIcwDi7gFwxYGUfp3dH8j7q3JVEodA5UGHWpLyjzzgruinzv4s-48Wr0VHC0vxlgTGFU=w4032-h3024-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwRj7imYmMCzej4nhxxgzsFHliewxB95sInLXHOLkHZBkgg7Yfj-L03lmC05Y-mTL670xq2MJOsZJMcOQBEiIjp38Uw_8MykRSe_dO3zIqtJzzoibsNNCKbfl_3hcefCCL-YhI=w1080-h1920-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwp9nACkm7n2-0YBywRmrkFGsZul_qolHkCNpeG_unQS5QMDUIdIkzA1deinoO1A0mvXMjuVJCIQQgXW1KyJ5PrOiN-gZJI9GDHfMCMj5rZ57UyaJFW60kWRcFz9kgxDECoGnET9uLZbiLl=w3024-h4032-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy1CdJXJamUuhLqgBixzDzlfJ-Y7riwbyGiLUjl36Wk87tWbCsWVq7Ixm4v1wjacksCcPPcEdhfUcVt_n7SnAvsKh7tZ5_eM64uzHDPHqyrwW6CxrovnWgNpRBDFCwc8eIoH6lgxQ=w4032-h2688-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxLMP8MFf-fH1pdHfrTxhB8XcJ0owPWSAhxRkRJlwujxMqfoQJDeM0BT-gHAH_jSX9-36pFT3xnw8Jsa1tnvFs2r0NN0M0keV_mFxJIaATauRYBacExWDICJAO90XvYmHyuudojvQ=w4128-h5120-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwDCQ4G77O-smVzRkUJeUAE3HtgWOscWgo4FFDNwJTGiGGxXFNdlpre2kvrxchL5aoO1nFmf4RzL-6uYwClyobNb2UYrWfGnAwgw4-EiVlpMqm3F0PYEChGjvXmk3H6pw6M2vDh5w=w4032-h2688-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx77hglADUt_to5ImWw7VLHp7uzAh7UcM5ktQn3eQGIw5LhNKIar4Xivug89z_pkmrpGxVhrH9c_JS_Ltzw7SUAVfuWycgcLClWoiWr2m_pQZH12r53ch-Kx0nQ1wArkTIxIy0G=w1125-h995-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyNqaEoxahb2yWLSDOYFGMeDBCUBzBPNhYwqZpE6UtYRnt6lhrpe8FmnyRcFtxIJh7GpiWuIXzESSuDVW6PRuPn7U9S_yiOdNPzaoenmmjelzEoC3TPVws95Y1ckvzYLIuoEXk=w1920-h1080-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwls-Sso4b1DyERuNQOqdbd0t7df_PwiUFDBU98Dm_y1E3W3Ady1x6uLYdlZ8Q2ZwmvsCxM5ndWn0nHTEcJj-hZo5SLIl_w89uVTn7FhSu2O4IHLDqV27ig9HIaVAOFvKbQuSQO14NZ66WD=w3000-h4000-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwk3H-IAgNCKCKm_CZuBdAULHqacTphRDO-5t5SGcbzXhxbcMBzW7_RhNTgp9cWbsEajU9VNo_qF3ldI4ujCBDPLFXwykPDgur121kVQQ_S6Q2s7ABE6CNHHXyRrkP-1hRYdoWL=w3024-h4032-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyr2woBwqu1F-qvhZ7eubCDMkvV-KlkcPd8NXGoJg6BBJeH4q1wKJ1H7M4SeXQ_HUY8MLGJPF03POsvtHgJm2QzH1oeE8umDU6AqgSoWwsVeu8c5kzJR-Z9OwcLwFPBF1B70tQ5=w4032-h2688-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwvkcgrT6AnC3LJATkVCuONL9MWzFcb_Mx53O2huL1Jq6Tm_NE8KDEks7wpJ8UH6zNP8nPrDcgDZn2zxgx91WsB7D_tGDcBLqJM7PnfQ8lpdonQ7h-QVm9M4WxfK62ZJa-5NSo=w4032-h3024-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzc_JeTcFYUUKvMqGLF8NzVX6cH9mJUaDkOLDM2x2pSFjscM4qV_1oKMFLbLXtmBuhlposIUNQhR_EJiKknpIKH-hZVB4iT1NQIA4vnZpfkw3HpfIrdFY8UpSXGi13kBLx2-vjw1Q=w3700-h2284-k-no",
-          "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwf892Zemf2FQXIkjgBPUbd0Q6XzZDo90N0rKsQ6DNzj6N9FRZGmduf6EaQJ4bvDJQYf-SyDvIkhMhGBcPbx1lKOLE6yrJXKVzBbW3l5kk6vkOGfgbi9SUkhyoU-lW41EfPOB_GSQ=w720-h1280-k-no"
-        ]
-      },
-      "wardId": 10,
-      "status": "ACTIVE",
-      "createdAt": "2025-10-12T13:10:53.139927",
-      "approvalStatus": "PENDING",
-      "approvedByAccountId": null,
-      "approvedAt": null,
-      "rejectionReason": null,
-      "tags": null,
-      "latitude": 16.0608007,
-      "longitude": 108.2227346,
-      "openingHours": {
-        "thứ hai": "10:00–22:00",
-        "thứ ba": "10:00–22:00",
-        "thứ tư": "10:00–22:00",
-        "thứ năm": "10:00–22:00",
-        "thứ sáu": "10:00–22:00",
-        "thứ bảy": "10:00–22:00",
-        "chủ nhật": "10:00–22:00"
-      },
-      "averageRating": 4.7,
-      "totalReviews": 50
-    },
-    "result": "PASS",
-    "duration": 48,
-    "error": "",
-    "timestamp": "2025-11-11T14:45:26.425Z"
-  },
-  {
-    "testCase": {
-      "name": "TC11: Get restaurant using old TEST_RESTAURANT_ID",
-      "description": "Test with environment variable restaurant ID",
+      "name": "TC-REST-04: Get restaurant using environment variable",
+      "description": "Test with TEST_RESTAURANT_ID from environment - expect 200 OK with valid data",
       "method": "GET",
       "path": "/api/v1/restaurants/${TEST_RESTAURANT_ID}",
       "expectedStatus": 200,
       "validateFields": [
         "restaurantId",
-        "name"
+        "name",
+        "status"
       ],
       "partialMatch": true
     },
@@ -1431,12 +417,14 @@
       "method": "GET",
       "url": "https://danangculinaryatlas.site/api/v1/restaurants/00207351-181d-4af4-9524-2f420c4225fd",
       "headers": {},
-      "body": null
+      "body": null,
+      "duration": 96
     },
     "expectedStatus": 200,
     "expectedResponse": [
       "restaurantId",
-      "name"
+      "name",
+      "status"
     ],
     "actualStatus": 200,
     "actualResponse": {
@@ -1491,8 +479,8 @@
       "totalReviews": 50
     },
     "result": "PASS",
-    "duration": 46,
+    "duration": 96,
     "error": "",
-    "timestamp": "2025-11-11T14:45:26.473Z"
+    "timestamp": "2025-11-12T01:26:42.143Z"
   }
 ]

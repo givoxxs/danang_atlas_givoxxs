@@ -1,27 +1,18 @@
 [
   {
-    "name": "TC01: Get restaurant detail with valid ID",
-    "description": "Retrieve restaurant details with existing restaurant ID",
+    "name": "TC-REST-01: Get restaurant detail with valid ID - complete validation",
+    "description": "Retrieve restaurant details with all required fields - expect name='The Pizza Company', status='ACTIVE', validate images, coordinates, opening hours, rating info",
     "method": "GET",
     "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
     "expectedStatus": 200,
-    "validateFields": [
-      "restaurantId",
-      "name",
-      "address",
-      "images",
-      "latitude",
-      "longitude",
-      "averageRating"
-    ],
-    "partialMatch": true
-  },
-  {
-    "name": "TC02: Verify restaurant has required fields",
-    "description": "Ensure all required fields are present in response",
-    "method": "GET",
-    "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
-    "expectedStatus": 200,
+    "expectedOutput": {
+      "restaurantId": "46284e0f-d935-429c-960f-3448df512f1f",
+      "name": "The Pizza Company",
+      "address": "1 Đ. Nguyễn Văn Linh, Phước Ninh, Hải Châu, Đà Nẵng 550000, Việt Nam",
+      "status": "ACTIVE",
+      "latitude": 16.0608007,
+      "longitude": 108.2227346
+    },
     "validateFields": [
       "restaurantId",
       "ownerAccountId",
@@ -29,99 +20,50 @@
       "address",
       "wardId",
       "status",
+      "approvalStatus",
+      "images.photo",
+      "images.sub_photo",
+      "latitude",
+      "longitude",
+      "openingHours",
+      "averageRating",
+      "totalReviews",
       "createdAt"
     ],
     "partialMatch": true
   },
   {
-    "name": "TC03: Get restaurant with non-existent ID",
-    "description": "Request restaurant details with invalid UUID",
+    "name": "TC-REST-02: Get restaurant with non-existent ID",
+    "description": "Try to retrieve restaurant with ID that doesn't exist - expect 404 Not Found error",
     "method": "GET",
     "path": "/api/v1/restaurants/00000000-0000-0000-0000-000000000000",
-    "expectedStatus": 404
+    "expectedStatus": 404,
+    "expectedOutput": {
+      "status": "error",
+      "message": "Restaurant not found with ID: 00000000-0000-0000-0000-000000000000"
+    }
   },
   {
-    "name": "TC04: Get restaurant with malformed ID",
-    "description": "Request with invalid UUID format",
+    "name": "TC-REST-03: Get restaurant with malformed ID",
+    "description": "Request with invalid UUID format - expect 400 Bad Request",
     "method": "GET",
-    "path": "/api/v1/restaurants/invalid-id-format",
-    "expectedStatus": 400
+    "path": "/api/v1/restaurants/invalid-uuid-format",
+    "expectedStatus": 400,
+    "expectedOutput": {
+      "status": "error",
+      "message": "Failed to convert value of type 'java.lang.String' to required type 'java.util.UUID'; Invalid UUID string: invalid-uuid-format"
+    }
   },
   {
-    "name": "TC05: Verify restaurant images structure",
-    "description": "Ensure images object contains photo and sub_photo arrays",
-    "method": "GET",
-    "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
-    "expectedStatus": 200,
-    "validateFields": [
-      "images.photo",
-      "images.sub_photo"
-    ],
-    "partialMatch": true
-  },
-  {
-    "name": "TC06: Verify restaurant location coordinates",
-    "description": "Ensure latitude and longitude are present and valid",
-    "method": "GET",
-    "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
-    "expectedStatus": 200,
-    "validateFields": [
-      "latitude",
-      "longitude"
-    ],
-    "partialMatch": true
-  },
-  {
-    "name": "TC07: Verify restaurant opening hours",
-    "description": "Ensure openingHours object is present",
-    "method": "GET",
-    "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
-    "expectedStatus": 200,
-    "validateFields": [
-      "openingHours"
-    ],
-    "partialMatch": true
-  },
-  {
-    "name": "TC08: Verify restaurant rating information",
-    "description": "Ensure averageRating and totalReviews are present",
-    "method": "GET",
-    "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
-    "expectedStatus": 200,
-    "validateFields": [
-      "averageRating",
-      "totalReviews"
-    ],
-    "partialMatch": true
-  },
-  {
-    "name": "TC09: Get restaurant with empty ID",
-    "description": "Request without providing restaurant ID",
-    "method": "GET",
-    "path": "/api/v1/restaurants/",
-    "expectedStatus": 500
-  },
-  {
-    "name": "TC10: Verify restaurant status field",
-    "description": "Ensure status field exists and has valid value",
-    "method": "GET",
-    "path": "/api/v1/restaurants/46284e0f-d935-429c-960f-3448df512f1f",
-    "expectedStatus": 200,
-    "validateFields": [
-      "status",
-      "approvalStatus"
-    ],
-    "partialMatch": true
-  },
-  {
-    "name": "TC11: Get restaurant using old TEST_RESTAURANT_ID",
-    "description": "Test with environment variable restaurant ID",
+    "name": "TC-REST-04: Get restaurant using environment variable",
+    "description": "Test with TEST_RESTAURANT_ID from environment - expect 200 OK with valid data",
     "method": "GET",
     "path": "/api/v1/restaurants/${TEST_RESTAURANT_ID}",
     "expectedStatus": 200,
     "validateFields": [
       "restaurantId",
-      "name"
+      "name",
+      "status"
     ],
     "partialMatch": true
   }

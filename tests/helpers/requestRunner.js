@@ -1,217 +1,212 @@
-// Helper to get a fetch function: prefer global fetch (Node 18+), else try node-fetch
+const fs = require('fs');
+const path = require('path');
+
+const TEST_DATA_FILE = path.join(__dirname, '../../reports/test-execution-data.json');
+const executionLog = [];
+
 function getFetch() {
   if (typeof fetch === 'function') return fetch;
   try {
     // eslint-disable-next-line global-require
     const nf = require('node-fetch');
-    // node-fetch v3 exports default function under `.default` when required from CommonJS
     return nf && (nf.default || nf);
   } catch (err) {
     return null;
   }
 }
 
-const fs = require('fs');
-const path = require('path');
+function replaceEnvPlaceholders(value) {
+  return String(value).replace(/\$\{([^}]+)\}/g, (_, name) => process.env[name] || '');
+}
 
-// Global storage for tokens extracted from previous test responses
-const tokenStore = {};
+function buildUrl(baseUrl, rawPath) {
+  const base = baseUrl.replace(/\/$/, '');
+  const pathPart = rawPath.startsWith('/') ? rawPath : `/${rawPath}`;
+  return `${base}${pathPart}`;
+}
 
-// Global storage for detailed test execution data (for Excel reporting)
-const testExecutionData = [];
+function sanitizeHeaders(headers) {
+  const sanitized = { ...headers };
+  if (sanitized.Authorization) {
+    sanitized.Authorization = 'Bearer [REDACTED]';
+  }
+  return sanitized;
+}
 
-// File path for storing test execution data
-const TEST_DATA_FILE = path.join(__dirname, '../../reports/test-execution-data.json');
+function prepareRequestInit(tc) {
+  const init = {
+    method: (tc.method || 'GET').toUpperCase(),
+    headers: { ...(tc.headers || {}) }
+  };
+
+  if (tc.useToken) {
+    const tokenKey = tc.useToken;
+    const token = process.env[tokenKey];
+    if (!token) {
+      throw new Error(`Token '${tokenKey}' not found in environment variables.`);
+    }
+    init.headers.Authorization = `Bearer ${token}`;
+  }
+
+  if (init.headers.Authorization) {
+    init.headers.Authorization = replaceEnvPlaceholders(init.headers.Authorization);
+  }
+
+  if (tc.body) {
+    const hasContentType = Object.keys(init.headers).some(
+      key => key.toLowerCase() === 'content-type'
+    );
+    if (!hasContentType) {
+      init.headers['Content-Type'] = 'application/json';
+    }
+    init.body = typeof tc.body === 'string' ? tc.body : JSON.stringify(tc.body);
+  }
+
+  return init;
+}
+
+async function parseResponse(res) {
+  const text = await res.text();
+  if (!text) return null;
+  try {
+    return JSON.parse(text);
+  } catch (err) {
+    return text;
+  }
+}
+
+function resolveExpectedBody(tc) {
+  if (Object.prototype.hasOwnProperty.call(tc, 'expectedBody')) return tc.expectedBody;
+  if (Object.prototype.hasOwnProperty.call(tc, 'expectedOutput')) return tc.expectedOutput;
+  return undefined;
+}
+
+function assertResponse(tc, status, body) {
+  if (typeof tc.expectedStatus !== 'undefined') {
+    expect(status).toBe(tc.expectedStatus);
+  }
+
+  const expectedBody = resolveExpectedBody(tc);
+  if (typeof expectedBody !== 'undefined') {
+    if (tc.partialMatch) {
+      expect(body).toEqual(expect.objectContaining(expectedBody));
+    } else {
+      expect(body).toEqual(expectedBody);
+    }
+  }
+
+  if (Array.isArray(tc.validateFields) && body !== null && typeof body === 'object') {
+    tc.validateFields.forEach(field => {
+      const value = field.split('.').reduce((acc, key) => (acc == null ? undefined : acc[key]), body);
+      expect(value).toBeDefined();
+    });
+  }
+}
+
+function recordExecution({ tc, requestDetails, expectedResponse, actualStatus, actualResponse, result, error }) {
+  executionLog.push({
+    testCase: tc,
+    request: requestDetails,
+    expectedStatus: tc.expectedStatus,
+    expectedResponse,
+    actualStatus,
+    actualResponse,
+    result,
+    duration: requestDetails.duration,
+    error,
+    timestamp: new Date().toISOString()
+  });
+  persistExecutionLog();
+}
+
+function persistExecutionLog() {
+  try {
+    const dir = path.dirname(TEST_DATA_FILE);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(TEST_DATA_FILE, JSON.stringify(executionLog, null, 2));
+  } catch (err) {
+    console.error('Failed to save test execution data:', err.message);
+  }
+}
 
 async function runCase(tc) {
-    if (!tc) throw new Error('Testcase is null/empty — check your JSON files.');
-    const fetchFn = getFetch();
-    if (!fetchFn) throw new Error('No fetch available: use Node 18+ or install node-fetch.');
+  if (!tc) throw new Error('Testcase is null/empty — check your JSON files.');
 
-    const base = process.env.API_BASE_URL;
-    if (!base) throw new Error('API_BASE_URL is not set in environment for external tests.');
+  const fetchFn = getFetch();
+  if (!fetchFn) throw new Error('No fetch available: use Node 18+ or install node-fetch.');
 
-    // Allow environment placeholders in path: ${VAR} will be replaced with process.env.VAR
-    const replaceEnvPlaceholders = s => String(s).replace(/\$\{([^}]+)\}/g, (_, name) => process.env[name] || '');
+  const baseUrl = process.env.API_BASE_URL;
+  if (!baseUrl) throw new Error('API_BASE_URL is not set in environment for external tests.');
 
-    // Build URL safely: ensure base has no trailing slash and path has leading slash
-    const baseClean = base.replace(/\/$/, '');
-    const rawPath = replaceEnvPlaceholders(tc.path || '');
-    if (!rawPath) throw new Error('Testcase path is empty after environment substitution.');
-    const pathPart = rawPath.startsWith('/') ? rawPath : `/${rawPath}`;
-    const url = `${baseClean}${pathPart}`;
+  const rawPath = tc.path ? replaceEnvPlaceholders(tc.path) : '';
+  if (!rawPath) throw new Error('Testcase path is empty after environment substitution.');
 
-    const init = { method: tc.method || 'GET', headers: tc.headers ? { ...tc.headers } : {} };
-    
-    // Track request details for reporting
-    const requestDetails = {
-        method: init.method,
-        url: url,
-        headers: { ...init.headers },
-        body: tc.body || null
-    };
-    
-    // Support Bearer token from previous test response
-    if (tc.useToken) {
-        const tokenKey = tc.useToken;
-        if (tokenStore[tokenKey]) {
-            init.headers['Authorization'] = `Bearer ${tokenStore[tokenKey]}`;
-            requestDetails.headers['Authorization'] = 'Bearer [TOKEN]'; // Mask token in report
-        } else {
-            throw new Error(`Token '${tokenKey}' not found in token store. Ensure the login test runs first.`);
-        }
-    }
+  const url = buildUrl(baseUrl, rawPath);
+  const init = prepareRequestInit(tc);
+  const requestStartedAt = Date.now();
 
-    if (tc.body) {
-        if (!Object.keys(init.headers).some(h => h.toLowerCase() === 'content-type')) {
-        init.headers['Content-Type'] = 'application/json';
-        }
-        init.body = typeof tc.body === 'string' ? tc.body : JSON.stringify(tc.body);
-    }
+  const requestDetails = {
+    method: init.method,
+    url,
+    headers: sanitizeHeaders(init.headers),
+    body: tc.body || null,
+    duration: 0
+  };
 
-    const startTime = Date.now();
-    let testResult = 'PASS';
-    let errorMessage = '';
-    let actualResponse = null;
-    let actualStatus = null;
+  let actualStatus = null;
+  let actualResponse = null;
+  const expectedResponseForLogging = (() => {
+    const expected = resolveExpectedBody(tc);
+    return typeof expected !== 'undefined' ? expected : tc.validateFields || null;
+  })();
 
-    try {
-        const res = await fetchFn(url, init);
-        actualStatus = res.status;
-        // Try parse JSON, otherwise return text
-        let body = null;
-        const txt = await res.text();
-        try { body = txt ? JSON.parse(txt) : null; } catch (e) { body = txt; }
-        actualResponse = body;
+  try {
+    const res = await fetchFn(url, init);
+    actualStatus = res.status;
+    actualResponse = await parseResponse(res);
 
-        // Store token if saveToken is specified
-        if (tc.saveToken && body) {
-            const tokenPath = tc.saveToken.split('.');
-            let tokenValue = body;
-            for (const key of tokenPath) {
-                tokenValue = tokenValue?.[key];
-            }
-            if (tokenValue) {
-                const tokenKey = tc.saveTokenAs || 'accessToken';
-                tokenStore[tokenKey] = tokenValue;
-                console.log(`Saved token '${tokenKey}' from response path '${tc.saveToken}'`);
-            } else {
-                console.warn(`Could not extract token from path '${tc.saveToken}' in response`);
-            }
-        }
+    assertResponse(tc, actualStatus, actualResponse);
 
-        if (typeof tc.expectedStatus !== 'undefined') {
-            expect(actualStatus).toBe(tc.expectedStatus);
-        }
-
-        if (typeof tc.expectedBody !== 'undefined') {
-            if (tc.partialMatch) {
-            expect(body).toEqual(expect.objectContaining(tc.expectedBody));
-            } else {
-            expect(body).toEqual(tc.expectedBody);
-            }
-        }
-
-        // Additional validation for response body fields
-        if (tc.validateFields) {
-            for (const field of tc.validateFields) {
-                const fieldPath = field.split('.');
-                let value = body;
-                for (const key of fieldPath) {
-                    value = value?.[key];
-                }
-                expect(value).toBeDefined();
-            }
-        }
-        
-        // If we reach here, test passed
-        const duration = Date.now() - startTime;
-        
-        // Store detailed execution data for Excel report
-        const executionRecord = {
-            testCase: tc,
-            request: requestDetails,
-            expectedStatus: tc.expectedStatus,
-            expectedResponse: tc.expectedBody || tc.validateFields || null,
-            actualStatus: actualStatus,
-            actualResponse: actualResponse,
-            result: 'PASS',
-            duration: duration,
-            error: '',
-            timestamp: new Date().toISOString()
-        };
-        
-        testExecutionData.push(executionRecord);
-        saveTestExecutionData();
-        
-    } catch (error) {
-        const duration = Date.now() - startTime;
-        
-        // Store detailed execution data even for failed tests
-        const executionRecord = {
-            testCase: tc,
-            request: requestDetails,
-            expectedStatus: tc.expectedStatus,
-            expectedResponse: tc.expectedBody || tc.validateFields || null,
-            actualStatus: actualStatus,
-            actualResponse: actualResponse,
-            result: 'FAIL',
-            duration: duration,
-            error: error.message,
-            timestamp: new Date().toISOString()
-        };
-        
-        testExecutionData.push(executionRecord);
-        saveTestExecutionData();
-        
-        throw error;
-    }
-
+    requestDetails.duration = Date.now() - requestStartedAt;
+    recordExecution({
+      tc,
+      requestDetails,
+      expectedResponse: expectedResponseForLogging,
+      actualStatus,
+      actualResponse,
+      result: 'PASS',
+      error: ''
+    });
+  } catch (error) {
+    requestDetails.duration = Date.now() - requestStartedAt;
+    recordExecution({
+      tc,
+      requestDetails,
+      expectedResponse: expectedResponseForLogging,
+      actualStatus,
+      actualResponse,
+      result: 'FAIL',
+      error: error.message
+    });
+    throw error;
+  }
 }
 
-// Function to save test execution data to file (persists across Jest processes)
-function saveTestExecutionData() {
-    try {
-        const dir = path.dirname(TEST_DATA_FILE);
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
-        }
-        fs.writeFileSync(TEST_DATA_FILE, JSON.stringify(testExecutionData, null, 2));
-    } catch (error) {
-        console.error('Failed to save test execution data:', error.message);
-    }
-}
-
-// Function to retrieve all test execution data
 function getTestExecutionData() {
-    return testExecutionData;
+  return executionLog;
 }
 
-// Function to load test execution data from file
-function loadTestExecutionDataFromFile() {
-    try {
-        if (fs.existsSync(TEST_DATA_FILE)) {
-            const data = fs.readFileSync(TEST_DATA_FILE, 'utf8');
-            return JSON.parse(data);
-        }
-    } catch (error) {
-        console.error('Failed to load test execution data from file:', error.message);
-    }
-    return [];
-}
-
-// Function to clear test execution data (useful for running multiple test suites)
 function clearTestExecutionData() {
-    testExecutionData.length = 0;
-    if (fs.existsSync(TEST_DATA_FILE)) {
-        fs.unlinkSync(TEST_DATA_FILE);
-    }
+  executionLog.length = 0;
+  if (fs.existsSync(TEST_DATA_FILE)) {
+    fs.unlinkSync(TEST_DATA_FILE);
+  }
 }
 
-module.exports = { 
-    runCase, 
-    tokenStore, 
-    getTestExecutionData, 
-    loadTestExecutionDataFromFile,
-    clearTestExecutionData 
+module.exports = {
+  runCase,
+  getTestExecutionData,
+  clearTestExecutionData
 };

@@ -3,9 +3,8 @@
  * 
  * This script generates a comprehensive multi-sheet Excel report with:
  * - Sheet 1: Executive Summary with overall statistics
- * - Sheet 2: Authentication Tests (detailed)
- * - Sheet 3: Profile Tests (detailed)
- * - Sheet 4: Restaurant Tests (detailed)
+ * - Sheet 2: Profile Tests (detailed)
+ * - Sheet 3: Restaurant Tests (detailed)
  * 
  * Each detailed sheet includes:
  * - Test Case ID, Name, Description
@@ -38,35 +37,23 @@ function generateComprehensiveExcelReport(testExecutionData, outputPath) {
     const workbook = XLSX.utils.book_new();
 
     // Group tests by category
-    const groupedTests = {
-        auth: testExecutionData.filter(t => t.testCase.name.includes('AUTH')),
-        profile: testExecutionData.filter(t => t.testCase.name.includes('PROFILE')),
-        restaurant: testExecutionData.filter(t => 
-            t.testCase.name.match(/TC\d+:/) && !t.testCase.name.includes('AUTH') && !t.testCase.name.includes('PROFILE')
-        )
-    };
+    const groupedTests = splitByFeature(testExecutionData);
 
     console.log(`📑 Test distribution:`);
-    console.log(`   - Auth: ${groupedTests.auth.length} tests`);
     console.log(`   - Profile: ${groupedTests.profile.length} tests`);
     console.log(`   - Restaurant: ${groupedTests.restaurant.length} tests`);
 
     // === SHEET 1: EXECUTIVE SUMMARY ===
     createSummarySheet(workbook, groupedTests, testExecutionData);
 
-    // === SHEET 2: AUTHENTICATION TESTS ===
-    if (groupedTests.auth.length > 0) {
-        createDetailedTestSheet(workbook, groupedTests.auth, 'Auth Tests', '🔐');
-    }
-
-    // === SHEET 3: PROFILE TESTS ===
+    // === SHEET 2: PROFILE TESTS ===
     if (groupedTests.profile.length > 0) {
-        createDetailedTestSheet(workbook, groupedTests.profile, 'Profile Tests', '👤');
+        createDetailedTestSheet(workbook, groupedTests.profile, 'Profile Tests');
     }
 
-    // === SHEET 4: RESTAURANT TESTS ===
+    // === SHEET 3: RESTAURANT TESTS ===
     if (groupedTests.restaurant.length > 0) {
-        createDetailedTestSheet(workbook, groupedTests.restaurant, 'Restaurant Tests', '🍽️');
+        createDetailedTestSheet(workbook, groupedTests.restaurant, 'Restaurant Tests');
     }
 
     // Ensure output directory exists
@@ -98,39 +85,32 @@ function generateComprehensiveExcelReport(testExecutionData, outputPath) {
  */
 function createSummarySheet(workbook, groupedTests, allTests) {
     const stats = calculateStatistics(allTests);
-    const authStats = calculateStatistics(groupedTests.auth);
     const profileStats = calculateStatistics(groupedTests.profile);
     const restaurantStats = calculateStatistics(groupedTests.restaurant);
 
     const summaryData = [
-        { 'Metrics': '📊 TỔNG QUAN TOÀN BỘ TEST SUITE', 'Giá Trị': '' },
-        { 'Metrics': '', 'Giá Trị': '' },
-        { 'Metrics': 'Tổng số Test Cases', 'Giá Trị': stats.total },
-        { 'Metrics': 'Test Cases PASSED', 'Giá Trị': stats.passed },
-        { 'Metrics': 'Test Cases FAILED', 'Giá Trị': stats.failed },
-        { 'Metrics': 'Tỷ lệ thành công (%)', 'Giá Trị': stats.passRate },
-        { 'Metrics': 'Tổng thời gian thực thi (ms)', 'Giá Trị': stats.totalDuration },
-        { 'Metrics': 'Thời gian trung bình/test (ms)', 'Giá Trị': stats.avgDuration },
-        { 'Metrics': '', 'Giá Trị': '' },
-        { 'Metrics': '🔐 AUTHENTICATION TESTS', 'Giá Trị': '' },
-        { 'Metrics': 'Tổng số tests', 'Giá Trị': authStats.total },
-        { 'Metrics': 'Passed', 'Giá Trị': authStats.passed },
-        { 'Metrics': 'Failed', 'Giá Trị': authStats.failed },
-        { 'Metrics': 'Tỷ lệ thành công (%)', 'Giá Trị': authStats.passRate },
-        { 'Metrics': '', 'Giá Trị': '' },
-        { 'Metrics': '👤 PROFILE TESTS', 'Giá Trị': '' },
-        { 'Metrics': 'Tổng số tests', 'Giá Trị': profileStats.total },
-        { 'Metrics': 'Passed', 'Giá Trị': profileStats.passed },
-        { 'Metrics': 'Failed', 'Giá Trị': profileStats.failed },
-        { 'Metrics': 'Tỷ lệ thành công (%)', 'Giá Trị': profileStats.passRate },
-        { 'Metrics': '', 'Giá Trị': '' },
-        { 'Metrics': '🍽️ RESTAURANT TESTS', 'Giá Trị': '' },
-        { 'Metrics': 'Tổng số tests', 'Giá Trị': restaurantStats.total },
-        { 'Metrics': 'Passed', 'Giá Trị': restaurantStats.passed },
-        { 'Metrics': 'Failed', 'Giá Trị': restaurantStats.failed },
-        { 'Metrics': 'Tỷ lệ thành công (%)', 'Giá Trị': restaurantStats.passRate },
-        { 'Metrics': '', 'Giá Trị': '' },
-        { 'Metrics': 'Thời gian tạo báo cáo', 'Giá Trị': new Date().toLocaleString('vi-VN') }
+        { 'Metrics': '📊 TỔNG QUAN TOÀN BỘ TEST SUITE'  , 'Giá Trị': '' },
+        { 'Metrics': ''                                 , 'Giá Trị': '' },
+        { 'Metrics': 'Tổng số Test Cases'               , 'Giá Trị': stats.total },
+        { 'Metrics': 'Test Cases PASSED'                , 'Giá Trị': stats.passed },
+        { 'Metrics': 'Test Cases FAILED'                , 'Giá Trị': stats.failed },
+        { 'Metrics': 'Tỷ lệ thành công (%)'             , 'Giá Trị': stats.passRate },
+        { 'Metrics': 'Tổng thời gian thực thi (ms)'     , 'Giá Trị': stats.totalDuration },
+        { 'Metrics': 'Thời gian trung bình/test (ms)'   , 'Giá Trị': stats.avgDuration },
+        { 'Metrics': ''                                 , 'Giá Trị': '' },
+        { 'Metrics': '👤 PROFILE TESTS'                 , 'Giá Trị': '' },
+        { 'Metrics': 'Tổng số tests'                    , 'Giá Trị': profileStats.total },
+        { 'Metrics': 'Passed'                           , 'Giá Trị': profileStats.passed },
+        { 'Metrics': 'Failed'                           , 'Giá Trị': profileStats.failed },
+        { 'Metrics': 'Tỷ lệ thành công (%)'             , 'Giá Trị': profileStats.passRate },
+        { 'Metrics': ''                                 , 'Giá Trị': '' },
+        { 'Metrics': '🍽️ RESTAURANT TESTS'              , 'Giá Trị': '' },
+        { 'Metrics': 'Tổng số tests'                    , 'Giá Trị': restaurantStats.total },
+        { 'Metrics': 'Passed'                           , 'Giá Trị': restaurantStats.passed },
+        { 'Metrics': 'Failed'                           , 'Giá Trị': restaurantStats.failed },
+        { 'Metrics': 'Tỷ lệ thành công (%)'             , 'Giá Trị': restaurantStats.passRate },
+        { 'Metrics': ''                                 , 'Giá Trị': '' },
+        { 'Metrics': 'Thời gian tạo báo cáo'            , 'Giá Trị': new Date().toLocaleString('vi-VN') }
     ];
 
     const worksheet = XLSX.utils.json_to_sheet(summaryData);
@@ -147,13 +127,17 @@ function createSummarySheet(workbook, groupedTests, allTests) {
 /**
  * Create detailed test sheet for a specific category
  */
-function createDetailedTestSheet(workbook, tests, sheetName, icon) {
+function createDetailedTestSheet(workbook, tests, sheetName) {
     const detailedData = tests.map((testExec, index) => {
-        const tc = testExec.testCase;
+        const tc = testExec.testCase || {};
         
         // Extract test ID from name
-        const testIdMatch = tc.name.match(/(TC-\w+-\d+|TC\d+)/);
+        const rawName = typeof tc.name === 'string' ? tc.name : '';
+        const testIdMatch = rawName.match(/(TC-\w+-\d+|TC\d+)/);
         const testId = testIdMatch ? testIdMatch[0] : `TC${String(index + 1).padStart(2, '0')}`;
+        const displayName = rawName
+            ? (testIdMatch ? rawName.replace(testId + ':', '').trim() : rawName)
+            : 'N/A';
 
         // Format request body
         const requestBody = tc.body ? JSON.stringify(tc.body, null, 2) : 'N/A';
@@ -163,19 +147,23 @@ function createDetailedTestSheet(workbook, tests, sheetName, icon) {
             JSON.stringify(testExec.request.headers, null, 2) : 'N/A';
 
         // Format expected response
-        let expectedResponse = 'Status Code: ' + (testExec.expectedStatus || 'N/A');
+        let expectedResponse = 'Status Code: ' + (typeof testExec.expectedStatus !== 'undefined' ? testExec.expectedStatus : 'N/A');
         if (testExec.expectedResponse) {
             if (Array.isArray(testExec.expectedResponse)) {
                 expectedResponse += '\nValidate Fields: ' + testExec.expectedResponse.join(', ');
-            } else {
+            } else if (typeof testExec.expectedResponse === 'object') {
                 expectedResponse += '\n' + JSON.stringify(testExec.expectedResponse, null, 2);
+            } else {
+                expectedResponse += '\n' + String(testExec.expectedResponse);
             }
         }
 
         // Format actual response (truncate if too long)
-        let actualResponse = 'Status Code: ' + (testExec.actualStatus || 'N/A');
+        let actualResponse = 'Status Code: ' + (typeof testExec.actualStatus !== 'undefined' ? testExec.actualStatus : 'N/A');
         if (testExec.actualResponse) {
-            const responseStr = JSON.stringify(testExec.actualResponse, null, 2);
+            const responseStr = typeof testExec.actualResponse === 'object'
+                ? JSON.stringify(testExec.actualResponse, null, 2)
+                : String(testExec.actualResponse);
             actualResponse += '\n' + (responseStr.length > 500 ? 
                 responseStr.substring(0, 500) + '...[truncated]' : responseStr);
         }
@@ -183,7 +171,7 @@ function createDetailedTestSheet(workbook, tests, sheetName, icon) {
         return {
             'STT': index + 1,
             'Test Case ID': testId,
-            'Tên Test Case': tc.name.replace(testId + ':', '').trim(),
+            'Tên Test Case': displayName,
             'Mô tả': tc.description || 'N/A',
             'HTTP Method': tc.method || 'GET',
             'Endpoint': tc.path || 'N/A',
@@ -249,6 +237,25 @@ function calculateStatistics(tests) {
         totalDuration,
         avgDuration
     };
+}
+
+/**
+ * Split execution data into feature groups (profile, restaurant, other)
+ */
+function splitByFeature(testExecutionData) {
+    const profile = [];
+    const restaurant = [];
+
+    testExecutionData.forEach(testExec => {
+        const name = testExec?.testCase?.name || '';
+        if (/PROFILE/i.test(name)) {
+            profile.push(testExec);
+        } else {
+            restaurant.push(testExec);
+        }
+    });
+
+    return { profile, restaurant };
 }
 
 /**
